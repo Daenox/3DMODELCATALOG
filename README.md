@@ -1,5 +1,7 @@
 # 3D Model Catalog & Gallery Hub 🚀
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Daenox/3DMODELCATALOG)
+
 Сучасний веб-сайт-галерея для 3D моделей, розроблений на Flask, SQLite та Tailwind CSS з підтримкою WebGL 3D перегляду (Google `<model-viewer>`).
 
 ## ✨ Реалізовані можливості
@@ -39,10 +41,29 @@
 
 ## 🛠 Запуск проекту
 
-### Швидкий запуск на Windows:
+### 🌐 1. Запуск у хмарі через GitHub (Codespaces в 1 клік):
+1. Натисніть бейдж:
+   [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Daenox/3DMODELCATALOG)
+   *(або перейдіть у репозиторій -> зелена кнопка **Code** -> вкладка **Codespaces** -> **Create codespace on main**)*.
+2. Хмарне середовище автоматично встановить залежності, заповнить демо-дані та запустить веб-сервер.
+3. У нижньому правому куті або у вкладці **Ports** натисніть кнопку **Open in Browser** (порт 5000) для перегляду сайту.
+
+---
+
+### 💻 2. Локальний запуск на Windows:
 Просто двічі клацніть файл **`run.bat`**.
 
-### Або через термінал PowerShell / CMD:
+---
+
+### 🐧 3. Запуск на Linux / macOS:
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+---
+
+### ⚙️ 4. Вручну через термінал PowerShell / CMD:
 ```powershell
 python -m pip install -r requirements.txt
 python seed_data.py

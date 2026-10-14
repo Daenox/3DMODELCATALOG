@@ -1,0 +1,24 @@
+{
+  "name": "3D Model Catalog",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "forwardPorts": [5000],
+  "portsAttributes": {
+    "5000": {
+      "label": "3D Model Catalog Web",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt && python seed_data.py",
+  "postStartCommand": "nohup python app.py > /tmp/flask.log 2>&1 &",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  }
+}

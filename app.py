@@ -360,5 +360,7 @@ def api_search():
 
 if __name__ == '__main__':
     database.init_db()
-    print("Сервер 3D Галереї запущено на http://127.0.0.1:5000")
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    host = os.environ.get('HOST', '0.0.0.0')
+    port = int(os.environ.get('PORT', 5000))
+    print(f"Сервер 3D Галереї запущено на http://{host}:{port}")
+    app.run(debug=True, host=host, port=port)

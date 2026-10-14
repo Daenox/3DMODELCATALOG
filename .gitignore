@@ -32,7 +32,9 @@ ENV/
 
 # IDE and editors
 .idea/
-.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
 *.sublime-project
 *.sublime-workspace
 

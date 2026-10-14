@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+
+{% block title %}Галерея 3D Моделей | 3D Gallery Hub{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Gallery Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-dark-800 pb-6">
+        <div>
+            <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-accent-cyan mb-2">
+                <i class="fa-solid fa-shapes"></i> Вкладка Галереї
+            </div>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">
+                Галерея 3D Моделей
+            </h1>
+            <p class="text-sm text-slate-400 mt-1">
+                Перегляд, фільтрація та пошук серед усіх доступних 3D моделей та їхніх фотографій
+            </p>
+        </div>
+
+        <!-- Add Model Button -->
+        <a href="{{ url_for('add_model') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm shadow-lg shadow-brand-600/30 transition-all hover:scale-[1.02] self-start md:self-auto">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>Додати модель</span>
+        </a>
+    </div>
+
+    <!-- Search & Filter Controls (Пошук за назвою або тегом) -->
+    <div class="bg-dark-900 border border-dark-700/80 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4">
+        <form action="{{ url_for('gallery') }}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-3">
+            
+            <!-- Пошук за назвою або тегом моделі -->
+            <div class="md:col-span-6 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input 
+                    type="text" 
+                    name="q" 
+                    id="gallery-search-input"
+                    value="{{ search_query }}"
+                    placeholder="Введіть назву моделі або тег (напр. шолом, ретро, sci-fi)..." 
+                    class="w-full pl-10 pr-10 py-2.5 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                >
+                {% if search_query %}
+                <a href="{{ url_for('gallery', category=current_category, tag=current_tag, sort=current_sort) }}" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Категорія -->
+            <div class="md:col-span-3">
+                <select 
+                    name="category" 
+                    onchange="this.form.submit()" 
+                    class="w-full py-2.5 px-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-brand-500 cursor-pointer"
+                >
+                    {% for cat in all_categories %}
+                    <option value="{% if cat != 'Всі' %}{{ cat }}{% endif %}" {% if current_category == cat or (not current_category and cat == 'Всі') %}selected{% endif %}>
+                        {{ cat }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Сортування -->
+            <div class="md:col-span-3 flex gap-2">
+                <select 
+                    name="sort" 
+                    onchange="this.form.submit()" 
+                    class="w-full py-2.5 px-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-brand-500 cursor-pointer"
+                >
+                    <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Найновіші спочатку</option>
+                    <option value="views" {% if current_sort == 'views' %}selected{% endif %}>Найпопулярніші (перегляди)</option>
+                    <option value="title" {% if current_sort == 'title' %}selected{% endif %}>За назвою (А - Я)</option>
+                    <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>Найстаріші</option>
+                </select>
+
+                <button type="submit" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-sm font-semibold transition-colors shrink-0">
+                    <i class="fa-solid fa-filter"></i>
+                </button>
+            </div>
+
+            <!-- Прихований тег при сабміті форми, якщо він активний -->
+            {% if current_tag %}
+            <input type="hidden" name="tag" value="{{ current_tag }}">
+            {% endif %}
+        </form>
+
+        <!-- Active Filters Indicator -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-dark-800 text-xs">
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="text-slate-400">Знайдено: <strong class="text-white font-mono">{{ total_results }}</strong> моделей</span>
+
+                {% if search_query %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-500/10 border border-brand-500/30 text-brand-300">
+                    <i class="fa-solid fa-magnifying-glass text-[10px]"></i> "{{ search_query }}"
+                    <a href="{{ url_for('gallery', category=current_category, tag=current_tag, sort=current_sort) }}" class="hover:text-white ml-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </a>
+                </span>
+                {% endif %}
+
+                {% if current_tag %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-accent-cyan/10 border border-accent-cyan/30 text-accent-cyan">
+                    <i class="fa-solid fa-hashtag text-[10px]"></i> {{ current_tag }}
+                    <a href="{{ url_for('gallery', q=search_query, category=current_category, sort=current_sort) }}" class="hover:text-white ml-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </a>
+                </span>
+                {% endif %}
+
+                {% if current_category and current_category != 'Всі' %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-accent-purple/10 border border-accent-purple/30 text-purple-300">
+                    <i class="fa-solid fa-folder text-[10px]"></i> {{ current_category }}
+                    <a href="{{ url_for('gallery', q=search_query, tag=current_tag, sort=current_sort) }}" class="hover:text-white ml-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </a>
+                </span>
+                {% endif %}
+
+                {% if search_query or current_tag or (current_category and current_category != 'Всі') %}
+                <a href="{{ url_for('gallery') }}" class="text-slate-400 hover:text-rose-400 font-medium ml-2 transition-colors">
+                    <i class="fa-solid fa-trash-can text-[11px] mr-1"></i>Скинути всі фільтри
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Popular Tags Cloud -->
+            <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-slate-500">Теги:</span>
+                {% for t, count in popular_tags[:8] %}
+                <a href="{{ url_for('gallery', tag=t, category=current_category) }}" 
+                   class="px-2 py-0.5 rounded text-[11px] {% if current_tag == t %}bg-accent-cyan text-dark-950 font-bold{% else %}bg-dark-800 text-slate-300 hover:text-white hover:bg-dark-700{% endif %} transition-colors">
+                    #{{ t }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Models Grid -->
+    {% if models %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for model in models %}
+        <article class="group bg-dark-900 border border-dark-700/70 hover:border-brand-500/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-brand-500/10 transition-all duration-300 flex flex-col">
+            
+            <!-- Card Image Container -->
+            <div class="relative aspect-[4/3] bg-dark-950 overflow-hidden">
+                {% if model.thumbnail %}
+                <img 
+                    src="{{ url_for('static', filename=model.thumbnail.replace('static/', '')) }}" 
+                    alt="{{ model.title }}" 
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                >
+                {% else %}
+                <div class="w-full h-full flex flex-col items-center justify-center text-slate-500 bg-dark-900">
+                    <i class="fa-solid fa-cube text-4xl mb-2"></i>
+                    <span class="text-xs">Без обкладинки</span>
+                </div>
+                {% endif %}
+
+                <!-- Badges -->
+                <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                    <span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-dark-950/85 backdrop-blur-md text-slate-200 border border-dark-700/60 shadow-md">
+                        {{ model.category }}
+                    </span>
+                    {% if model.file_format %}
+                    <span class="px-2 py-1 rounded-lg text-[11px] font-mono font-bold bg-brand-600/90 text-white shadow-md">
+                        {{ model.file_format }}
+                    </span>
+                    {% endif %}
+                </div>
+
+                <!-- Gallery Photos Count Badge (Визначний бейдж фото галереї) -->
+                <div class="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-dark-950/85 backdrop-blur-md text-amber-300 border border-amber-500/30 shadow-md">
+                    <i class="fa-solid fa-camera"></i>
+                    <span>{{ model.photo_count }} фото</span>
+                </div>
+
+                <!-- Quick Hover Action Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-dark-950/90 via-dark-950/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                    <a href="{{ url_for('model_detail', model_id=model.id) }}" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold text-center shadow-lg transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Відкрити 3D & Фотогалерею</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-5 flex-1 flex flex-col justify-between">
+                <div>
+                    <!-- Title -->
+                    <h3 class="text-base font-bold text-white group-hover:text-brand-400 transition-colors line-clamp-1">
+                        <a href="{{ url_for('model_detail', model_id=model.id) }}">
+                            {{ model.title }}
+                        </a>
+                    </h3>
+
+                    <!-- Description excerpt -->
+                    <p class="mt-2 text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                        {{ model.description or 'Опис відсутній.' }}
+                    </p>
+                </div>
+
+                <!-- Tags & Meta Info -->
+                <div class="mt-4 pt-4 border-t border-dark-800">
+                    {% if model.tags %}
+                    <div class="flex flex-wrap gap-1.5 mb-3">
+                        {% for tag in model.tags.split(',')[:3] %}
+                        <a href="{{ url_for('gallery', tag=tag.strip(), category=current_category) }}" class="text-[11px] text-slate-400 hover:text-brand-300 bg-dark-850 hover:bg-dark-800 px-2 py-0.5 rounded border border-dark-700/60 transition-colors">
+                            #{{ tag.strip() }}
+                        </a>
+                        {% endfor %}
+                        {% if model.tags.split(',')|length > 3 %}
+                        <span class="text-[10px] text-slate-500 self-center">+{{ model.tags.split(',')|length - 3 }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <div class="flex items-center justify-between text-[11px] text-slate-400">
+                        <span class="flex items-center gap-1 text-slate-300 font-medium">
+                            <i class="fa-regular fa-user text-slate-500"></i> {{ model.author }}
+                        </span>
+                        <div class="flex items-center gap-3">
+                            <span><i class="fa-solid fa-shapes text-slate-500"></i> {{ model.poly_count or 'N/A' }}</span>
+                            <span><i class="fa-regular fa-eye text-slate-500"></i> {{ model.views }}</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-20 bg-dark-900 border border-dark-800 rounded-3xl p-8 max-w-xl mx-auto">
+        <div class="w-20 h-20 rounded-full bg-dark-850 border border-dark-700 flex items-center justify-center mx-auto mb-4 text-slate-500">
+            <i class="fa-solid fa-magnifying-glass text-3xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white">Моделей не знайдено</h3>
+        <p class="text-sm text-slate-400 mt-2">
+            За вашим запитом {% if search_query %}«{{ search_query }}»{% endif %} нічого не знайдено. Спробуйте змінити фільтри або скинути параметри пошуку.
+        </p>
+        <div class="mt-6 flex flex-wrap justify-center gap-3">
+            <a href="{{ url_for('gallery') }}" class="px-5 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 text-white text-sm font-semibold transition-colors">
+                <i class="fa-solid fa-rotate-left mr-1.5"></i> Скинути фільтри
+            </a>
+            <a href="{{ url_for('add_model') }}" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors">
+                <i class="fa-solid fa-plus mr-1.5"></i> Додати модель
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

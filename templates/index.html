@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block title %}3D Gallery Hub | Головна - Каталог та Галерея 3D Моделей{% endblock %}
+
+{% block content %}
+<div class="space-y-16 py-6 sm:py-10">
+
+    <!-- Hero Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-dark-900 via-dark-850 to-dark-900 border border-dark-700/80 p-8 sm:p-14 shadow-2xl">
+            <!-- Glow background effect -->
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-600/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-purple/15 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold mb-6">
+                    <span class="w-2 h-2 rounded-full bg-accent-cyan animate-pulse"></span>
+                    Сучасний WebGL & 3D Каталог
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                    Інтерактивна галерея для ваших <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-accent-cyan to-accent-purple">3D моделей</span>
+                </h1>
+
+                <p class="mt-5 text-base sm:text-lg text-slate-300 leading-relaxed font-normal max-w-2xl">
+                    Завантажуйте 3D моделі, додавайте галереї фотографій та рендерів, шукайте за назвою або тегами і досліджуйте моделі безпосередньо у браузері в реальному часі.
+                </p>
+
+                <!-- Action Search Box in Hero -->
+                <div class="mt-8 flex flex-col sm:flex-row gap-3 max-w-xl">
+                    <form action="{{ url_for('gallery') }}" method="GET" class="flex-1 relative flex items-center">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 text-base"></i>
+                        <input 
+                            type="text" 
+                            name="q" 
+                            placeholder="Пошук моделі за назвою або тегом..." 
+                            class="w-full pl-11 pr-4 py-3.5 bg-dark-950/80 border border-dark-700 text-white placeholder-slate-400 rounded-2xl text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 shadow-inner"
+                        >
+                    </form>
+                    <a href="{{ url_for('gallery') }}" class="px-6 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-brand-600/30 transition-all hover:scale-[1.02]">
+                        <i class="fa-solid fa-shapes"></i>
+                        <span>Галерея</span>
+                    </a>
+                </div>
+
+                <!-- Quick Category Badges -->
+                <div class="mt-6 flex flex-wrap items-center gap-2 text-xs">
+                    <span class="text-slate-400 font-medium">Популярні теги:</span>
+                    {% for tag, count in popular_tags[:6] %}
+                    <a href="{{ url_for('gallery', tag=tag) }}" class="px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-brand-600/20 hover:text-brand-300 border border-dark-700/80 text-slate-300 transition-colors">
+                        #{{ tag }} <span class="text-slate-500 text-[10px]">({{ count }})</span>
+                    </a>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="mt-12 pt-8 border-t border-dark-700/60 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8">
+                <div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono">{{ stats.total_models }}</div>
+                    <div class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-cube text-brand-400"></i> Моделей в базі
+                    </div>
+                </div>
+                <div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono">{{ stats.total_photos }}</div>
+                    <div class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-images text-accent-cyan"></i> Фото в галереях
+                    </div>
+                </div>
+                <div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono">{{ stats.total_views }}</div>
+                    <div class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-eye text-accent-purple"></i> Переглядів
+                    </div>
+                </div>
+                <div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono">SQLite</div>
+                    <div class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-database text-emerald-400"></i> Збереження даних
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- БЛОК «НЕЩОДАВНО ДОДАНІ МОДЕЛІ» (Вимога користувача) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div>
+                <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-400 mb-2">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Останні оновлення
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+                    Нещодавно додані моделі
+                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20">
+                        Останні надходження
+                    </span>
+                </h2>
+                <p class="text-sm text-slate-400 mt-1">
+                    Свіжі 3D моделі та нові фотографії, завантажені користувачами
+                </p>
+            </div>
+            
+            <a href="{{ url_for('gallery', sort='newest') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors group">
+                <span>Переглянути всю галерею</span>
+                <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+
+        {% if recent_models %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for model in recent_models %}
+            <article class="group bg-dark-900 border border-dark-700/70 hover:border-brand-500/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-brand-500/10 transition-all duration-300 flex flex-col">
+                
+                <!-- Card Image Container -->
+                <div class="relative aspect-[4/3] bg-dark-950 overflow-hidden">
+                    {% if model.thumbnail %}
+                    <img 
+                        src="{{ url_for('static', filename=model.thumbnail.replace('static/', '')) }}" 
+                        alt="{{ model.title }}" 
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                    >
+                    {% else %}
+                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-500 bg-dark-900">
+                        <i class="fa-solid fa-cube text-4xl mb-2"></i>
+                        <span class="text-xs">Без обкладинки</span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Overlays: Category & Badges -->
+                    <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-dark-950/85 backdrop-blur-md text-slate-200 border border-dark-700/60 shadow-md">
+                            {{ model.category }}
+                        </span>
+                        {% if model.file_format %}
+                        <span class="px-2 py-1 rounded-lg text-[11px] font-mono font-bold bg-brand-600/90 text-white shadow-md">
+                            {{ model.file_format }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Photo Gallery Count Badge -->
+                    <div class="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-dark-950/85 backdrop-blur-md text-amber-300 border border-amber-500/30 shadow-md">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>{{ model.photo_count }} фото</span>
+                    </div>
+
+                    <!-- Quick Hover Action Button -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark-950/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                        <a href="{{ url_for('model_detail', model_id=model.id) }}" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold text-center shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>Відкрити 3D & Галерею</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <!-- Title -->
+                        <h3 class="text-base font-bold text-white group-hover:text-brand-400 transition-colors line-clamp-1">
+                            <a href="{{ url_for('model_detail', model_id=model.id) }}">
+                                {{ model.title }}
+                            </a>
+                        </h3>
+
+                        <!-- Description excerpt -->
+                        <p class="mt-2 text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                            {{ model.description or 'Опис відсутній.' }}
+                        </p>
+                    </div>
+
+                    <!-- Tags & Meta Info -->
+                    <div class="mt-4 pt-4 border-t border-dark-800">
+                        {% if model.tags %}
+                        <div class="flex flex-wrap gap-1.5 mb-3">
+                            {% for tag in model.tags.split(',')[:3] %}
+                            <a href="{{ url_for('gallery', tag=tag.strip()) }}" class="text-[11px] text-slate-400 hover:text-brand-300 bg-dark-850 hover:bg-dark-800 px-2 py-0.5 rounded border border-dark-700/60 transition-colors">
+                                #{{ tag.strip() }}
+                            </a>
+                            {% endfor %}
+                            {% if model.tags.split(',')|length > 3 %}
+                            <span class="text-[10px] text-slate-500 self-center">+{{ model.tags.split(',')|length - 3 }}</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <div class="flex items-center justify-between text-[11px] text-slate-400">
+                            <span class="flex items-center gap-1 text-slate-300 font-medium">
+                                <i class="fa-regular fa-user text-slate-500"></i> {{ model.author }}
+                            </span>
+                            <div class="flex items-center gap-3">
+                                <span><i class="fa-solid fa-shapes text-slate-500"></i> {{ model.poly_count or 'N/A' }}</span>
+                                <span><i class="fa-regular fa-eye text-slate-500"></i> {{ model.views }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-16 bg-dark-900 border border-dark-800 rounded-3xl p-8">
+            <i class="fa-solid fa-cube text-5xl text-slate-600 mb-4"></i>
+            <h3 class="text-lg font-bold text-white">Моделей поки що немає</h3>
+            <p class="text-sm text-slate-400 mt-2">Будьте першим, хто додасть 3D модель з фотографіями галереї!</p>
+            <a href="{{ url_for('add_model') }}" class="mt-6 inline-flex items-center gap-2 px-5 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-semibold hover:bg-brand-500 transition-colors">
+                <i class="fa-solid fa-plus"></i> Додати модель
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Bottom Banner to Add Model -->
+        <div class="mt-12 p-8 rounded-3xl bg-gradient-to-r from-brand-900/30 via-accent-purple/20 to-dark-900 border border-brand-500/20 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-5">
+                <div class="w-14 h-14 rounded-2xl bg-brand-600/20 border border-brand-500/30 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-cloud-arrow-up text-2xl text-brand-400"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Маєте власні 3D моделі чи рендери?</h3>
+                    <p class="text-sm text-slate-300 mt-1">
+                        Завантажуйте файли (.glb, .obj, .stl) та додавайте декілька фотографій для детальної галереї.
+                    </p>
+                </div>
+            </div>
+            <a href="{{ url_for('add_model') }}" class="px-6 py-3 rounded-xl bg-white hover:bg-slate-100 text-dark-950 font-bold text-sm shadow-xl transition-all hover:scale-105 shrink-0 flex items-center gap-2">
+                <i class="fa-solid fa-plus text-brand-600"></i>
+                <span>Завантажити модель та фото</span>
+            </a>
+        </div>
+
+    </section>
+
+</div>
+{% endblock %}

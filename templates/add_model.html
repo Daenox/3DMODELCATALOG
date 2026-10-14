@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block title %}Додати 3D Модель та Фотографії Галереї | 3D Gallery Hub{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <a href="{{ url_for('gallery') }}" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white mb-3 transition-colors">
+            <i class="fa-solid fa-arrow-left"></i> Назад до галереї
+        </a>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+            <span class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-cyan flex items-center justify-center text-white text-lg shadow-lg shadow-brand-500/20">
+                <i class="fa-solid fa-cube"></i>
+            </span>
+            Додати нову 3D Модель
+        </h1>
+        <p class="text-sm text-slate-400 mt-2">
+            Заповніть інформацію, завантажте 3D файл та додайте фотографії для персональної фотогалереї моделі. Всі дані зберігаються в базі даних SQLite.
+        </p>
+    </div>
+
+    <!-- Main Form -->
+    <form action="{{ url_for('add_model') }}" method="POST" enctype="multipart/form-data" class="space-y-8 bg-dark-900 border border-dark-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl">
+        
+        <!-- Розділ 1: Основна інформація -->
+        <div class="space-y-5">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2.5 pb-3 border-b border-dark-800">
+                <i class="fa-solid fa-circle-info text-brand-400"></i>
+                <span>Основна інформація про модель</span>
+            </h2>
+
+            <!-- Title -->
+            <div>
+                <label for="title" class="block text-sm font-semibold text-slate-200 mb-2">
+                    Назва моделі <span class="text-rose-400">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="title" 
+                    name="title" 
+                    required 
+                    placeholder="Наприклад: Кіберпанк Шолом, Вінтажний Автомобіль..." 
+                    class="w-full px-4 py-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                >
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <!-- Category -->
+                <div>
+                    <label for="category" class="block text-sm font-semibold text-slate-200 mb-2">
+                        Категорія
+                    </label>
+                    <select 
+                        id="category" 
+                        name="category" 
+                        class="w-full px-4 py-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white focus:outline-none focus:border-brand-500 cursor-pointer"
+                    >
+                        {% for cat in all_categories %}
+                            {% if cat != 'Всі' %}
+                            <option value="{{ cat }}">{{ cat }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Author -->
+                <div>
+                    <label for="author" class="block text-sm font-semibold text-slate-200 mb-2">
+                        Автор / 3D Художник
+                    </label>
+                    <input 
+                        type="text" 
+                        id="author" 
+                        name="author" 
+                        placeholder="Ваше ім'я або студія" 
+                        class="w-full px-4 py-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                    >
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="description" class="block text-sm font-semibold text-slate-200 mb-2">
+                    Детальний опис
+                </label>
+                <textarea 
+                    id="description" 
+                    name="description" 
+                    rows="4" 
+                    placeholder="Опишіть вашу 3D модель: для чого вона підходить, особливості топології, матеріалів або текстур..." 
+                    class="w-full px-4 py-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all resize-y"
+                ></textarea>
+            </div>
+
+            <!-- Tags & Poly Count -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                    <label for="tags" class="block text-sm font-semibold text-slate-200 mb-2">
+                        Теги (через кому)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="tags" 
+                        name="tags" 
+                        placeholder="sci-fi, шолом, зброя, low-poly, pbr" 
+                        class="w-full px-4 py-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                    >
+                    <p class="text-[11px] text-slate-500 mt-1">Використовуються для швидкого пошуку та фільтрації у галереї</p>
+                </div>
+
+                <div>
+                    <label for="poly_count" class="block text-sm font-semibold text-slate-200 mb-2">
+                        Кількість полігонів / Топологія
+                    </label>
+                    <input 
+                        type="text" 
+                        id="poly_count" 
+                        name="poly_count" 
+                        placeholder="Напр. 15,400 або Low-poly" 
+                        class="w-full px-4 py-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                    >
+                </div>
+            </div>
+        </div>
+
+        <!-- Розділ 2: Файли 3D та Обкладинка -->
+        <div class="space-y-5 pt-4">
+            <h2 class="text-lg font-bold text-white flex items-center gap-2.5 pb-3 border-b border-dark-800">
+                <i class="fa-solid fa-shapes text-accent-cyan"></i>
+                <span>Файл 3D моделі та Головна обкладинка</span>
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- 3D Model File -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-200 mb-2">
+                        Файл 3D моделі (.glb, .gltf, .obj, .stl)
+                    </label>
+                    <div class="border-2 border-dashed border-dark-700 hover:border-brand-500/60 rounded-2xl p-5 text-center bg-dark-950/60 transition-colors">
+                        <i class="fa-solid fa-cube text-3xl text-brand-400 mb-2"></i>
+                        <p class="text-xs text-slate-300 font-medium">Оберіть 3D файл</p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">GLB, GLTF для інтерактивного 3D перегляду, або OBJ, STL, FBX</p>
+                        <input 
+                            type="file" 
+                            name="model_file" 
+                            id="model_file" 
+                            accept=".glb,.gltf,.obj,.stl,.fbx,.blend,.zip"
+                            class="mt-3 block w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-600/30 file:text-brand-300 hover:file:bg-brand-600/50 cursor-pointer"
+                        >
+                    </div>
+                </div>
+
+                <!-- Main Thumbnail Cover -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-200 mb-2">
+                        Головна обкладинка картки (Прев'ю)
+                    </label>
+                    <div class="border-2 border-dashed border-dark-700 hover:border-accent-cyan/60 rounded-2xl p-5 text-center bg-dark-950/60 transition-colors">
+                        <i class="fa-solid fa-image text-3xl text-accent-cyan mb-2"></i>
+                        <p class="text-xs text-slate-300 font-medium">Оберіть обкладинку</p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">PNG, JPG, WEBP (рекомендовано 4:3 або 16:9)</p>
+                        <input 
+                            type="file" 
+                            name="thumbnail" 
+                            id="thumbnail" 
+                            accept="image/*"
+                            onchange="previewThumbnail(this)"
+                            class="mt-3 block w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-accent-cyan/20 file:text-accent-cyan hover:file:bg-accent-cyan/30 cursor-pointer"
+                        >
+                    </div>
+                    <!-- Thumbnail preview preview container -->
+                    <div id="thumb-preview-container" class="mt-3 hidden">
+                        <p class="text-[11px] text-slate-400 mb-1">Попередній перегляд обкладинки:</p>
+                        <img id="thumb-preview-img" src="" alt="Thumbnail preview" class="w-full h-32 object-cover rounded-xl border border-dark-700">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- РОЗДІЛ 3: ДОДАВАННЯ ФОТОГРАФІЙ ДЛЯ ГАЛЕРЕЇ (Вимога користувача) -->
+        <div class="space-y-5 pt-4">
+            <div class="flex items-center justify-between pb-3 border-b border-dark-800">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2.5">
+                    <i class="fa-solid fa-images text-amber-400"></i>
+                    <span>Фотографії для галереї моделі</span>
+                </h2>
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    Мульти-завантаження
+                </span>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+                Додайте рендери, скріншоти сітки (wireframe), види з різних ракурсів чи текстурні карти. Всі додані фото будуть відображатися в інтерактивній галереї та повноекранному перегляді для цієї моделі!
+            </p>
+
+            <div class="border-2 border-dashed border-amber-500/30 hover:border-amber-500/60 rounded-2xl p-6 sm:p-8 text-center bg-dark-950/80 transition-all">
+                <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-3 text-amber-400 text-2xl">
+                    <i class="fa-solid fa-camera-retro"></i>
+                </div>
+                <h3 class="text-sm font-bold text-white">Виберіть фотографії для фотогалереї</h3>
+                <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+                    Ви можете вибрати одразу декілька зображень (натисніть Ctrl або Shift при виборі файлів)
+                </p>
+
+                <div class="mt-4 flex justify-center">
+                    <label class="cursor-pointer px-5 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-bold text-xs flex items-center gap-2 transition-all hover:scale-105">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <span>Обрати файли фотографій</span>
+                        <input 
+                            type="file" 
+                            name="gallery_photos" 
+                            id="gallery_photos" 
+                            multiple 
+                            accept="image/*"
+                            onchange="previewGalleryPhotos(this)"
+                            class="hidden"
+                        >
+                    </label>
+                </div>
+            </div>
+
+            <!-- Контейнер прев'ю обраних фотографій -->
+            <div id="gallery-previews-section" class="hidden space-y-3">
+                <div class="flex items-center justify-between">
+                    <span id="gallery-count-badge" class="text-xs font-bold text-amber-400">
+                        <!-- Заповнюється JS -->
+                    </span>
+                    <button type="button" onclick="clearGalleryPhotos()" class="text-xs text-slate-400 hover:text-rose-400 transition-colors">
+                        <i class="fa-solid fa-xmark mr-1"></i> Очистити вибір фото
+                    </button>
+                </div>
+                <div id="gallery-previews-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                    <!-- Заповнюється динамічно через JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit & Cancel Buttons -->
+        <div class="pt-6 border-t border-dark-800 flex flex-col sm:flex-row items-center justify-end gap-3">
+            <a href="{{ url_for('gallery') }}" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-dark-800 hover:bg-dark-700 text-slate-300 text-sm font-semibold text-center transition-colors">
+                Скасувати
+            </a>
+            <button 
+                type="submit" 
+                class="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-brand-600 via-accent-purple to-brand-600 hover:from-brand-500 hover:to-brand-500 text-white font-bold text-sm shadow-xl shadow-brand-500/25 transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
+            >
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>Зберегти 3D Модель та Фото</span>
+            </button>
+        </div>
+
+    </form>
+
+</div>
+{% endblock %}

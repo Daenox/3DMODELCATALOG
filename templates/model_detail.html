@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ model.title }} | 3D Галерея{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+    <!-- Breadcrumb & Actions Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <nav class="flex items-center gap-2 text-xs text-slate-400">
+            <a href="{{ url_for('index') }}" class="hover:text-white transition-colors">Головна</a>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-600"></i>
+            <a href="{{ url_for('gallery') }}" class="hover:text-white transition-colors">Галерея</a>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-600"></i>
+            <a href="{{ url_for('gallery', category=model.category) }}" class="hover:text-white transition-colors">{{ model.category }}</a>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-600"></i>
+            <span class="text-slate-200 font-medium truncate max-w-[200px]">{{ model.title }}</span>
+        </nav>
+
+        <div class="flex items-center gap-2">
+            <a href="{{ url_for('edit_model', model_id=model.id) }}" class="px-3.5 py-1.5 rounded-xl bg-dark-800 hover:bg-dark-750 text-slate-300 hover:text-white text-xs font-semibold border border-dark-700 transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-pen-to-square"></i> Редагувати
+            </a>
+            <form action="{{ url_for('delete_model', model_id=model.id) }}" method="POST" onsubmit="return confirm('Ви впевнені, що хочете видалити цю 3D модель та всі її фотографії?')" class="inline">
+                <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 text-xs font-semibold border border-rose-500/30 transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-trash-can"></i> Видалити
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main View Grid: 3D Viewer & Details -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left: 3D Interactive Viewport / Cover Display (7 cols) -->
+        <div class="lg:col-span-8 space-y-4">
+            
+            <div class="relative bg-dark-900 border border-dark-700/80 rounded-3xl overflow-hidden shadow-2xl h-[420px] sm:h-[540px]">
+                {% if model.model_file and (model.file_format in ['GLB', 'GLTF'] or model.model_file.endswith('.glb') or model.model_file.endswith('.gltf')) %}
+                    <!-- Interactive 3D Model Viewer -->
+                    <model-viewer
+                        id="viewer-3d"
+                        src="{{ url_for('static', filename=model.model_file.replace('static/', '')) }}"
+                        poster="{{ url_for('static', filename=model.thumbnail.replace('static/', '')) if model.thumbnail else '' }}"
+                        alt="{{ model.title }}"
+                        auto-rotate
+                        rotation-per-second="30deg"
+                        camera-controls
+                        touch-action="pan-y"
+                        shadow-intensity="1.5"
+                        shadow-softness="0.8"
+                        exposure="1.0"
+                        environment-image="neutral"
+                        interaction-prompt="auto"
+                        class="w-full h-full bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950"
+                    >
+                        <!-- Loading spinner inside model-viewer -->
+                        <div slot="poster" class="w-full h-full flex items-center justify-center bg-dark-950">
+                            {% if model.thumbnail %}
+                            <img src="{{ url_for('static', filename=model.thumbnail.replace('static/', '')) }}" class="w-full h-full object-cover opacity-60">
+                            {% endif %}
+                            <div class="absolute flex flex-col items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin text-3xl text-brand-400"></i>
+                                <span class="text-xs font-bold text-slate-300">Завантаження 3D моделі...</span>
+                            </div>
+                        </div>
+                    </model-viewer>
+
+                    <!-- Control overlay buttons for 3D viewer -->
+                    <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+                        <div class="flex items-center gap-2 pointer-events-auto">
+                            <button 
+                                id="btn-toggle-rotate" 
+                                onclick="toggleAutoRotate()"
+                                class="px-3 py-1.5 rounded-xl bg-dark-900/85 backdrop-blur-md border border-dark-700/80 text-xs font-medium text-slate-200 hover:text-white hover:bg-dark-800 transition-all flex items-center gap-1.5 shadow-lg"
+                            >
+                                <i class="fa-solid fa-arrows-rotate text-brand-400"></i>
+                                <span id="rotate-label">Пауза обертання</span>
+                            </button>
+                            <button 
+                                onclick="resetCamera()"
+                                class="px-3 py-1.5 rounded-xl bg-dark-900/85 backdrop-blur-md border border-dark-700/80 text-xs font-medium text-slate-200 hover:text-white hover:bg-dark-800 transition-all flex items-center gap-1.5 shadow-lg"
+                            >
+                                <i class="fa-solid fa-crosshairs text-accent-cyan"></i>
+                                <span>Скинути ракурс</span>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-2 pointer-events-auto">
+                            <button 
+                                onclick="toggleFullscreen()"
+                                class="p-2.5 rounded-xl bg-dark-900/85 backdrop-blur-md border border-dark-700/80 text-xs font-medium text-slate-200 hover:text-white hover:bg-dark-800 transition-all shadow-lg"
+                                title="Повноекранний режим 3D"
+                            >
+                                <i class="fa-solid fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3D Indicator Badge -->
+                    <div class="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1 rounded-xl bg-brand-600/90 text-white text-xs font-bold shadow-lg backdrop-blur-md">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span>Інтерактивний 3D перегляд</span>
+                    </div>
+
+                {% elif model.thumbnail %}
+                    <!-- Static Thumbnail image if no glb or model format is non-web (e.g. blend/obj) -->
+                    <img 
+                        src="{{ url_for('static', filename=model.thumbnail.replace('static/', '')) }}" 
+                        alt="{{ model.title }}" 
+                        class="w-full h-full object-cover"
+                    >
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-transparent to-transparent flex items-end p-6">
+                        <div class="text-xs text-slate-300 bg-dark-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-dark-700">
+                            Формат: {{ model.file_format or 'Зображення' }}. Завантажте файл для відкриття у 3D редакторі.
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-500">
+                        <i class="fa-solid fa-cube text-6xl mb-3"></i>
+                        <p class="text-sm">3D файл або обкладинка не завантажені</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Hint under viewer -->
+            <div class="flex items-center justify-between text-xs text-slate-400 px-2">
+                <span class="flex items-center gap-2">
+                    <i class="fa-solid fa-computer-mouse text-brand-400"></i>
+                    <span>Обертайте лівою кнопкою миші, масштабуйте коліщатком</span>
+                </span>
+                <span class="font-mono text-slate-500">ID: #{{ model.id }}</span>
+            </div>
+
+        </div>
+
+        <!-- Right: Model Details & Specs (4 cols) -->
+        <div class="lg:col-span-4 space-y-6">
+            
+            <div class="bg-dark-900 border border-dark-700/80 rounded-3xl p-6 sm:p-7 shadow-xl space-y-6">
+                <!-- Title & Category -->
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <a href="{{ url_for('gallery', category=model.category) }}" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-dark-800 text-brand-400 border border-dark-700 hover:border-brand-500/40 transition-colors">
+                            {{ model.category }}
+                        </a>
+                        {% if model.file_format %}
+                        <span class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-dark-800 text-slate-300 border border-dark-700">
+                            {{ model.file_format }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    <h1 class="text-2xl font-extrabold text-white tracking-tight">
+                        {{ model.title }}
+                    </h1>
+                    <p class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                        <i class="fa-regular fa-user text-slate-500"></i>
+                        <span>Автор: <strong class="text-slate-200">{{ model.author }}</strong></span>
+                    </p>
+                </div>
+
+                <!-- Description -->
+                <div class="border-t border-dark-800 pt-4">
+                    <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Опис моделі</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line">
+                        {{ model.description or 'Опис відсутній.' }}
+                    </p>
+                </div>
+
+                <!-- Tags (Пошук за тегами) -->
+                {% if tags_list %}
+                <div class="border-t border-dark-800 pt-4">
+                    <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Теги</h2>
+                    <div class="flex flex-wrap gap-1.5">
+                        {% for tag in tags_list %}
+                        <a href="{{ url_for('gallery', tag=tag) }}" class="px-2.5 py-1 rounded-lg text-xs bg-dark-800 hover:bg-brand-600/20 text-slate-300 hover:text-brand-300 border border-dark-700 transition-colors flex items-center gap-1">
+                            <span class="text-accent-cyan">#</span>{{ tag }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Technical Specs Table -->
+                <div class="border-t border-dark-800 pt-4 space-y-2.5 text-xs">
+                    <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Технічні характеристики</h2>
+                    
+                    <div class="flex justify-between py-1.5 border-b border-dark-800/60">
+                        <span class="text-slate-400">Полігони / Сітка:</span>
+                        <span class="font-semibold text-slate-200 font-mono">{{ model.poly_count or 'Low-Poly' }}</span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5 border-b border-dark-800/60">
+                        <span class="text-slate-400">Формат файлу:</span>
+                        <span class="font-semibold text-brand-400 font-mono">{{ model.file_format or 'Не вказано' }}</span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5 border-b border-dark-800/60">
+                        <span class="text-slate-400">Розмір файлу:</span>
+                        <span class="font-semibold text-slate-200 font-mono">{{ model.file_size | filesize }}</span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5 border-b border-dark-800/60">
+                        <span class="text-slate-400">Дата додавання:</span>
+                        <span class="font-semibold text-slate-200">{{ model.created_at | format_date }}</span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5">
+                        <span class="text-slate-400">Переглядів:</span>
+                        <span class="font-semibold text-slate-200 font-mono">{{ model.views }}</span>
+                    </div>
+                </div>
+
+                <!-- Download 3D File Button -->
+                {% if model.model_file %}
+                <div class="pt-2">
+                    <a 
+                        href="{{ url_for('download_model', model_id=model.id) }}" 
+                        class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/25 transition-all hover:scale-[1.02] flex items-center justify-center gap-2"
+                    >
+                        <i class="fa-solid fa-download"></i>
+                        <span>Завантажити 3D Модель ({{ model.file_size | filesize }})</span>
+                    </a>
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ВЕЛИКА ФОТОГАЛЕРЕЯ МОДЕЛІ (Вимога користувача: окремі фото для галереї) -->
+    <section class="bg-dark-900 border border-dark-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-dark-800 pb-5">
+            <div>
+                <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400 mb-1">
+                    <i class="fa-solid fa-camera"></i> Фотоальбом
+                </div>
+                <h2 class="text-2xl font-extrabold text-white tracking-tight flex items-center gap-3">
+                    Фотогалерея моделі
+                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        {{ photos|length }} фотографій
+                    </span>
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                    Рендери, ракурси та детальні знімки. Натисніть на будь-яке фото для повноекранного перегляду в лайтбоксі.
+                </p>
+            </div>
+
+            <!-- Додати нові фото -->
+            <a href="{{ url_for('edit_model', model_id=model.id) }}#gallery-section" class="px-4 py-2 rounded-xl bg-dark-800 hover:bg-dark-750 text-amber-400 border border-amber-500/30 text-xs font-bold transition-all flex items-center gap-2 self-start sm:self-auto hover:border-amber-500/60">
+                <i class="fa-solid fa-plus"></i>
+                <span>Додати ще фото</span>
+            </a>
+        </div>
+
+        {% if photos %}
+        <!-- Photo Gallery Grid with Click-to-Lightbox -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="model-gallery-grid">
+            {% for photo in photos %}
+            <div 
+                class="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-dark-950 border border-dark-700/80 hover:border-amber-500/60 cursor-pointer shadow-md transition-all duration-300 hover:scale-[1.02]"
+                onclick="openLightbox({{ loop.index0 }})"
+            >
+                <img 
+                    src="{{ url_for('static', filename=photo.photo_path.replace('static/', '')) }}" 
+                    alt="{{ photo.caption or model.title }}" 
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 gallery-image-item"
+                    data-caption="{{ photo.caption or model.title }}"
+                    data-full="{{ url_for('static', filename=photo.photo_path.replace('static/', '')) }}"
+                    loading="lazy"
+                >
+
+                <!-- Overlay with zoom icon & caption -->
+                <div class="absolute inset-0 bg-gradient-to-t from-dark-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
+                    <span class="self-end p-2 rounded-lg bg-dark-900/80 backdrop-blur-md text-white text-xs">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </span>
+                    <p class="text-xs font-medium text-slate-200 line-clamp-1">
+                        {{ photo.caption or 'Фото #' ~ loop.index }}
+                    </p>
+                </div>
+
+                <div class="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-mono bg-dark-950/80 text-amber-400 border border-amber-500/30 backdrop-blur-sm">
+                    #{{ loop.index }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- No photos yet state -->
+        <div class="text-center py-12 border-2 border-dashed border-dark-800 rounded-2xl p-6">
+            <i class="fa-solid fa-images text-4xl text-slate-600 mb-3"></i>
+            <h3 class="text-base font-bold text-white">У цієї моделі ще немає додаткових фото</h3>
+            <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                Ви можете завантажити фотографії, рендери та скріншоти у формі редагування.
+            </p>
+            <a href="{{ url_for('edit_model', model_id=model.id) }}" class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold hover:bg-amber-500/30 transition-colors">
+                <i class="fa-solid fa-plus"></i> Додати фотографії
+            </a>
+        </div>
+        {% endif %}
+
+    </section>
+
+    <!-- Схожі моделі (Related Models) -->
+    {% if related_models %}
+    <section class="space-y-6 pt-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-brand-400"></i>
+                <span>Схожі моделі з категорії «{{ model.category }}»</span>
+            </h2>
+            <a href="{{ url_for('gallery', category=model.category) }}" class="text-xs font-semibold text-brand-400 hover:text-brand-300">
+                Більше в категорії &rarr;
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {% for rm in related_models %}
+            <article class="group bg-dark-900 border border-dark-700/70 hover:border-brand-500/50 rounded-2xl overflow-hidden shadow-md transition-all flex flex-col">
+                <div class="relative aspect-[4/3] bg-dark-950 overflow-hidden">
+                    {% if rm.thumbnail %}
+                    <img src="{{ url_for('static', filename=rm.thumbnail.replace('static/', '')) }}" alt="{{ rm.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-slate-600 bg-dark-900"><i class="fa-solid fa-cube text-3xl"></i></div>
+                    {% endif %}
+                    <div class="absolute top-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded bg-dark-950/80 text-amber-300 border border-amber-500/30">
+                        {{ rm.photo_count }} фото
+                    </div>
+                </div>
+                <div class="p-4 flex-1 flex flex-col justify-between">
+                    <h3 class="text-xs font-bold text-white group-hover:text-brand-400 transition-colors line-clamp-1">
+                        <a href="{{ url_for('model_detail', model_id=rm.id) }}">{{ rm.title }}</a>
+                    </h3>
+                    <div class="mt-3 flex items-center justify-between text-[10px] text-slate-400 border-t border-dark-800 pt-2">
+                        <span>{{ rm.author }}</span>
+                        <a href="{{ url_for('model_detail', model_id=rm.id) }}" class="text-brand-400 hover:underline">3D & Фото &rarr;</a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // 3D Viewer controls
+    const viewer = document.getElementById('viewer-3d');
+    const rotateLabel = document.getElementById('rotate-label');
+
+    function toggleAutoRotate() {
+        if (!viewer) return;
+        if (viewer.hasAttribute('auto-rotate')) {
+            viewer.removeAttribute('auto-rotate');
+            if (rotateLabel) rotateLabel.textContent = 'Увімкнути обертання';
+        } else {
+            viewer.setAttribute('auto-rotate', '');
+            if (rotateLabel) rotateLabel.textContent = 'Пауза обертання';
+        }
+    }
+
+    function resetCamera() {
+        if (!viewer) return;
+        viewer.cameraOrbit = '0deg 75deg 105%';
+        viewer.fieldOfView = 'auto';
+        viewer.jumpCameraToGoal();
+    }
+
+    function toggleFullscreen() {
+        if (!viewer) return;
+        if (viewer.requestFullscreen) {
+            viewer.requestFullscreen();
+        } else if (viewer.webkitRequestFullscreen) {
+            viewer.webkitRequestFullscreen();
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,57 @@
+/* Custom styles for 3D Gallery Hub */
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #090d16;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #23304f;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3b82f6;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.25s ease-out forwards;
+}
+
+/* Model Viewer Styling */
+model-viewer {
+    --progress-bar-color: #3b82f6;
+    --progress-bar-height: 3px;
+    --progress-mask: transparent;
+    cursor: grab;
+}
+
+model-viewer:active {
+    cursor: grabbing;
+}
+
+/* Lightbox transition */
+#photo-lightbox {
+    transition: opacity 0.2s ease-in-out;
+}
+
+#photo-lightbox.hidden {
+    display: none;
+}

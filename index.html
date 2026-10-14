@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="uk" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Gallery Hub | Головна - Каталог та Галерея 3D Моделей</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                        },
+                        dark: {
+                            950: '#090d16',
+                            900: '#0d1322',
+                            850: '#131b2e',
+                            800: '#19233c',
+                            700: '#23304f',
+                            600: '#33446b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Model Viewer for 3D GLB/GLTF models -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body class="bg-dark-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-dark-900/85 border-b border-dark-700/60 transition-all duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
+                
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-3 group shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-accent-purple to-accent-cyan p-0.5 shadow-lg shadow-brand-500/20 group-hover:shadow-brand-500/40 transition-all duration-300">
+                        <div class="w-full h-full bg-dark-900 rounded-[10px] flex items-center justify-center">
+                            <i class="fa-solid fa-cube text-transparent bg-clip-text bg-gradient-to-tr from-brand-500 to-accent-cyan text-xl group-hover:scale-110 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5">
+                            3D<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-accent-cyan">GALLERY</span>
+                            <span class="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">Hub</span>
+                        </span>
+                        <span class="text-[11px] text-slate-400 font-medium tracking-wide">Каталог 3D моделей</span>
+                    </div>
+                </a>
+
+                <!-- Live Search Bar in Header -->
+                <div class="hidden md:flex flex-1 max-w-md mx-4 relative" id="header-search-container">
+                    <form action="gallery.html" method="GET" class="w-full relative">
+                        <div class="relative flex items-center">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 text-sm pointer-events-none"></i>
+                            <input 
+                                type="text" 
+                                name="q" 
+                                id="header-search-input"
+                                placeholder="Пошук за назвою або тегом..." 
+                                autocomplete="off"
+                                class="w-full pl-10 pr-10 py-2 text-sm bg-dark-850 border border-dark-700/80 rounded-xl text-slate-200 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                            >
+                        </div>
+                    </form>
+                    
+                    <!-- Search Autocomplete Dropdown -->
+                    <div id="search-autocomplete-dropdown" class="absolute top-full left-0 right-0 mt-2 bg-dark-850 border border-dark-700 rounded-2xl shadow-2xl overflow-hidden hidden z-50 max-h-96 overflow-y-auto">
+                        <div id="search-results-list" class="divide-y divide-dark-750"></div>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="flex items-center gap-1 sm:gap-2">
+                    <a href="index.html" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 bg-brand-500/10 text-brand-400 border border-brand-500/20 shadow-sm">
+                        <i class="fa-solid fa-house mr-1.5 text-xs"></i>
+                        <span>Головна</span>
+                    </a>
+
+                    <a href="gallery.html" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-300 hover:text-white hover:bg-dark-800">
+                        <i class="fa-solid fa-shapes mr-1.5 text-xs text-accent-cyan"></i>
+                        <span>Галерея</span>
+                    </a>
+
+                    <a href="add.html" class="ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white shadow-lg shadow-brand-600/25 hover:shadow-brand-600/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span class="hidden sm:inline">Додати модель</span>
+                        <span class="sm:hidden">Додати</span>
+                    </a>
+                </nav>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <div class="space-y-16 py-6 sm:py-10">
+
+            <!-- Hero Section -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-dark-900 via-dark-850 to-dark-900 border border-dark-700/80 p-8 sm:p-14 shadow-2xl">
+                    <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-600/15 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-purple/15 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="relative z-10 max-w-3xl">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold mb-6">
+                            <span class="w-2 h-2 rounded-full bg-accent-cyan animate-pulse"></span>
+                            Сучасний WebGL & 3D Каталог онлайн
+                        </div>
+
+                        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                            Інтерактивна галерея для ваших <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-accent-cyan to-accent-purple">3D моделей</span>
+                        </h1>
+
+                        <p class="mt-5 text-base sm:text-lg text-slate-300 leading-relaxed font-normal max-w-2xl">
+                            Досліджуйте 3D моделі безпосередньо у браузері з WebGL переглядом, гортайте галереї детальних рендерів, шукайте за тегами та додавайте нові моделі.
+                        </p>
+
+                        <!-- Action Search Box in Hero -->
+                        <div class="mt-8 flex flex-col sm:flex-row gap-3 max-w-xl">
+                            <form action="gallery.html" method="GET" class="flex-1 relative flex items-center">
+                                <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400 text-base"></i>
+                                <input 
+                                    type="text" 
+                                    name="q" 
+                                    placeholder="Пошук моделі за назвою або тегом..." 
+                                    class="w-full pl-11 pr-4 py-3.5 bg-dark-950/80 border border-dark-700 text-white placeholder-slate-400 rounded-2xl text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 shadow-inner"
+                                >
+                            </form>
+                            <a href="gallery.html" class="px-6 py-3.5 bg-brand-600 hover:bg-brand-500 text-white rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-brand-600/30 transition-all hover:scale-[1.02]">
+                                <i class="fa-solid fa-shapes"></i>
+                                <span>Галерея</span>
+                            </a>
+                        </div>
+
+                        <!-- Popular Tags -->
+                        <div class="mt-6 flex flex-wrap items-center gap-2 text-xs" id="hero-popular-tags">
+                            <span class="text-slate-400 font-medium">Популярні теги:</span>
+                        </div>
+
+                    </div>
+
+                    <!-- Stats Bar -->
+                    <div class="mt-12 pt-8 border-t border-dark-700/60 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8">
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono" id="stat-models">0</div>
+                            <div class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-cube text-brand-400"></i> Моделей в базі
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono" id="stat-photos">0</div>
+                            <div class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-images text-accent-cyan"></i> Фото в галереях
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono" id="stat-views">0</div>
+                            <div class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-eye text-accent-purple"></i> Переглядів
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono">GitHub Pages</div>
+                            <div class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-cloud text-emerald-400"></i> Онлайн хостинг
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- БЛОК «НЕЩОДАВНО ДОДАНІ МОДЕЛІ» -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-400 mb-2">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Останні оновлення
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+                            Нещодавно додані моделі
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20">
+                                Останні надходження
+                            </span>
+                        </h2>
+                        <p class="text-sm text-slate-400 mt-1">
+                            Переглядайте щойно завантажені 3D моделі, їх формати та кількість фотографій
+                        </p>
+                    </div>
+
+                    <a href="gallery.html" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-400 hover:text-brand-300 transition-colors group">
+                        <span>Переглянути всю галерею</span>
+                        <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+
+                <!-- Recent Models Grid (Rendered dynamically) -->
+                <div id="recent-models-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </section>
+
+            <!-- Live 3D Showcase Banner -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-gradient-to-r from-dark-900 via-dark-850 to-dark-900 border border-dark-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col lg:flex-row items-center gap-8">
+                    <div class="flex-1 space-y-4">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-purple/10 border border-accent-purple/20 text-accent-purple text-xs font-bold">
+                            <i class="fa-solid fa-vr-cardboard"></i> Інтерактивний WebGL 3D Переглядач
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-white">
+                            Обертайте, наближайте та досліджуйте моделі
+                        </h3>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Технологія Google Model-Viewer забезпечує плавний 60 FPS рендеринг PBR-текстур, реалістичні тіні та підтримку поворотів на будь-якому пристрої без додаткових плагінів.
+                        </p>
+                        <div class="pt-2 flex flex-wrap gap-3 text-xs">
+                            <span class="px-3 py-1.5 rounded-xl bg-dark-950 border border-dark-700 text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-arrows-rotate text-brand-400"></i> Авто-обертання
+                            </span>
+                            <span class="px-3 py-1.5 rounded-xl bg-dark-950 border border-dark-700 text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass-plus text-accent-cyan"></i> Зум коліщатком
+                            </span>
+                            <span class="px-3 py-1.5 rounded-xl bg-dark-950 border border-dark-700 text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-expand text-emerald-400"></i> Повноекранний режим
+                            </span>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-96 h-72 rounded-2xl overflow-hidden bg-dark-950 border border-dark-700 relative">
+                        <model-viewer
+                            src="static/uploads/models/damaged_helmet.glb"
+                            poster="static/uploads/thumbnails/thumb_1.jpg"
+                            alt="Interactive 3D Demo"
+                            auto-rotate
+                            rotation-per-second="20deg"
+                            camera-controls
+                            touch-action="pan-y"
+                            shadow-intensity="1.2"
+                            class="w-full h-full"
+                        ></model-viewer>
+                        <div class="absolute bottom-2 right-2 bg-dark-900/80 backdrop-blur px-2 py-1 rounded text-[10px] text-slate-400">
+                            Демо: Кіберпанк Шолом
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-dark-800 bg-dark-900/60 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-cube text-brand-500"></i>
+                <span>&copy; 2026 <strong>3D GALLERY Hub</strong>. Всі права захищено.</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/Daenox/3DMODELCATALOG" target="_blank" class="hover:text-white transition-colors flex items-center gap-1.5">
+                    <i class="fa-brands fa-github text-sm"></i> GitHub Репозиторій
+                </a>
+                <span class="text-dark-700">•</span>
+                <span class="text-emerald-400 flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Онлайн на GitHub Pages
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="static/js/models-data.js"></script>
+    <script src="static/js/catalog.js"></script>
+    <script src="static/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Stats
+            const stats = CatalogStore.getStats();
+            document.getElementById('stat-models').textContent = stats.totalModels;
+            document.getElementById('stat-photos').textContent = stats.totalPhotos;
+            document.getElementById('stat-views').textContent = stats.totalViews;
+
+            // Popular tags
+            const tagsContainer = document.getElementById('hero-popular-tags');
+            const popularTags = CatalogStore.getPopularTags(6);
+            popularTags.forEach(([tag, count]) => {
+                const a = document.createElement('a');
+                a.href = `gallery.html?tag=${encodeURIComponent(tag)}`;
+                a.className = 'px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-brand-600/20 hover:text-brand-300 border border-dark-700/80 text-slate-300 transition-colors';
+                a.innerHTML = `#${tag} <span class="text-slate-500 text-[10px]">(${count})</span>`;
+                tagsContainer.appendChild(a);
+            });
+
+            // Recent models
+            const recentGrid = document.getElementById('recent-models-grid');
+            const recentModels = CatalogStore.getRecentModels(6);
+
+            recentModels.forEach(m => {
+                const card = document.createElement('div');
+                card.className = 'group flex flex-col bg-dark-900 border border-dark-700/80 hover:border-brand-500/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-brand-500/10 transition-all duration-300 hover:-translate-y-1';
+                
+                const thumbImg = m.thumbnail 
+                    ? `<img src="${m.thumbnail}" alt="${m.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">`
+                    : `<div class="w-full h-full flex items-center justify-center text-slate-600 bg-dark-950"><i class="fa-solid fa-cube text-4xl"></i></div>`;
+
+                const tagsList = m.tags ? m.tags.split(',').slice(0, 3).map(t => 
+                    `<span class="px-2 py-0.5 rounded-md bg-dark-850 text-slate-300 text-[10px] font-medium border border-dark-700">#${t.trim()}</span>`
+                ).join('') : '';
+
+                card.innerHTML = `
+                    <div class="relative aspect-[16/10] bg-dark-950 overflow-hidden">
+                        ${thumbImg}
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-transparent to-transparent opacity-80"></div>
+                        
+                        <!-- Format Badge -->
+                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
+                            <span class="px-2.5 py-1 rounded-lg bg-dark-900/90 backdrop-blur-md border border-dark-700 text-brand-400 text-[11px] font-extrabold tracking-wider font-mono shadow-md">
+                                ${m.file_format || 'GLB'}
+                            </span>
+                            <span class="px-2 py-1 rounded-lg bg-dark-900/90 backdrop-blur-md border border-dark-700 text-slate-300 text-[11px] font-mono">
+                                ${CatalogStore.formatFilesize(m.file_size)}
+                            </span>
+                        </div>
+
+                        <!-- Photo count badge -->
+                        <div class="absolute top-3 right-3">
+                            <span class="px-2.5 py-1 rounded-lg bg-dark-900/90 backdrop-blur-md border border-amber-500/30 text-amber-300 text-[11px] font-bold shadow-md flex items-center gap-1.5">
+                                <i class="fa-solid fa-camera"></i>
+                                <span>${m.photo_count} фото</span>
+                            </span>
+                        </div>
+
+                        <!-- Hover overlay -->
+                        <a href="model.html?id=${m.id}" class="absolute inset-0 flex items-center justify-center bg-dark-950/60 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[2px]">
+                            <span class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-brand-600/50 scale-95 group-hover:scale-100 transition-transform">
+                                <i class="fa-solid fa-cube"></i> Відкрити 3D Перегляд
+                            </span>
+                        </a>
+                    </div>
+
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+                                <span class="text-accent-cyan font-semibold">${m.category}</span>
+                                <span class="flex items-center gap-1"><i class="fa-solid fa-eye text-slate-500"></i> ${m.views || 0}</span>
+                            </div>
+                            <h3 class="text-base font-bold text-white group-hover:text-brand-400 transition-colors line-clamp-1">
+                                <a href="model.html?id=${m.id}">${m.title}</a>
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                                ${m.description}
+                            </p>
+                        </div>
+
+                        <div class="pt-3 border-t border-dark-800 flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-1.5 text-slate-400">
+                                <i class="fa-solid fa-user-astronaut text-slate-500 text-[10px]"></i>
+                                <span class="truncate max-w-[120px]">${m.author}</span>
+                            </div>
+                            <div class="flex flex-wrap gap-1">
+                                ${tagsList}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                recentGrid.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>

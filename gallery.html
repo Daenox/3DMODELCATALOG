@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="uk" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея 3D Моделей | 3D Gallery Hub</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                        },
+                        dark: {
+                            950: '#090d16',
+                            900: '#0d1322',
+                            850: '#131b2e',
+                            800: '#19233c',
+                            700: '#23304f',
+                            600: '#33446b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body class="bg-dark-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-dark-900/85 border-b border-dark-700/60 transition-all duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
+                
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-3 group shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-accent-purple to-accent-cyan p-0.5 shadow-lg shadow-brand-500/20 group-hover:shadow-brand-500/40 transition-all duration-300">
+                        <div class="w-full h-full bg-dark-900 rounded-[10px] flex items-center justify-center">
+                            <i class="fa-solid fa-cube text-transparent bg-clip-text bg-gradient-to-tr from-brand-500 to-accent-cyan text-xl group-hover:scale-110 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5">
+                            3D<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-accent-cyan">GALLERY</span>
+                            <span class="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">Hub</span>
+                        </span>
+                        <span class="text-[11px] text-slate-400 font-medium tracking-wide">Каталог 3D моделей</span>
+                    </div>
+                </a>
+
+                <!-- Live Search Bar in Header -->
+                <div class="hidden md:flex flex-1 max-w-md mx-4 relative" id="header-search-container">
+                    <form action="gallery.html" method="GET" class="w-full relative">
+                        <div class="relative flex items-center">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 text-sm pointer-events-none"></i>
+                            <input 
+                                type="text" 
+                                name="q" 
+                                id="header-search-input"
+                                placeholder="Пошук за назвою або тегом..." 
+                                autocomplete="off"
+                                class="w-full pl-10 pr-10 py-2 text-sm bg-dark-850 border border-dark-700/80 rounded-xl text-slate-200 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all"
+                            >
+                        </div>
+                    </form>
+                    
+                    <div id="search-autocomplete-dropdown" class="absolute top-full left-0 right-0 mt-2 bg-dark-850 border border-dark-700 rounded-2xl shadow-2xl overflow-hidden hidden z-50 max-h-96 overflow-y-auto">
+                        <div id="search-results-list" class="divide-y divide-dark-750"></div>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="flex items-center gap-1 sm:gap-2">
+                    <a href="index.html" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-300 hover:text-white hover:bg-dark-800">
+                        <i class="fa-solid fa-house mr-1.5 text-xs"></i>
+                        <span>Головна</span>
+                    </a>
+
+                    <a href="gallery.html" class="px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 bg-brand-500/10 text-brand-400 border border-brand-500/20 shadow-sm">
+                        <i class="fa-solid fa-shapes mr-1.5 text-xs text-accent-cyan"></i>
+                        <span>Галерея</span>
+                    </a>
+
+                    <a href="add.html" class="ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white shadow-lg shadow-brand-600/25 hover:shadow-brand-600/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span class="hidden sm:inline">Додати модель</span>
+                        <span class="sm:hidden">Додати</span>
+                    </a>
+                </nav>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+            <!-- Gallery Header -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-dark-800 pb-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-accent-cyan mb-2">
+                        <i class="fa-solid fa-shapes"></i> Вкладка Галереї
+                    </div>
+                    <h1 class="text-3xl font-extrabold text-white tracking-tight">
+                        Галерея 3D Моделей
+                    </h1>
+                    <p class="text-sm text-slate-400 mt-1">
+                        Перегляд, фільтрація та пошук серед усіх доступних 3D моделей та їхніх фотографій
+                    </p>
+                </div>
+
+                <a href="add.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm shadow-lg shadow-brand-600/30 transition-all hover:scale-[1.02] self-start md:self-auto">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>Додати модель</span>
+                </a>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div class="bg-dark-900 border border-dark-700/80 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4">
+                <form id="gallery-filter-form" class="grid grid-cols-1 md:grid-cols-12 gap-3" onsubmit="event.preventDefault(); applyFilters();">
+                    
+                    <!-- Search Input -->
+                    <div class="md:col-span-6 relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input 
+                            type="text" 
+                            id="gallery-search-input"
+                            placeholder="Введіть назву моделі або тег (напр. шолом, ретро, sci-fi)..." 
+                            class="w-full pl-10 pr-10 py-2.5 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                        >
+                        <button type="button" id="clear-search-btn" class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </button>
+                    </div>
+
+                    <!-- Category Select -->
+                    <div class="md:col-span-3">
+                        <select 
+                            id="category-select" 
+                            class="w-full py-2.5 px-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-brand-500 cursor-pointer"
+                        >
+                            <option value="">Всі категорії</option>
+                        </select>
+                    </div>
+
+                    <!-- Sort Select -->
+                    <div class="md:col-span-3 flex gap-2">
+                        <select 
+                            id="sort-select" 
+                            class="w-full py-2.5 px-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-brand-500 cursor-pointer"
+                        >
+                            <option value="newest">Найновіші спочатку</option>
+                            <option value="views">Найпопулярніші (перегляди)</option>
+                            <option value="title">За назвою (А - Я)</option>
+                            <option value="oldest">Найстаріші</option>
+                        </select>
+
+                        <button type="button" onclick="applyFilters()" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-sm font-semibold transition-colors shrink-0">
+                            <i class="fa-solid fa-filter"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Active Filters Info -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-dark-800 text-xs">
+                    <div class="flex flex-wrap items-center gap-2" id="active-filters-container">
+                        <span class="text-slate-400">Знайдено: <strong class="text-white font-mono" id="results-count">0</strong> моделей</span>
+                    </div>
+
+                    <button type="button" id="reset-filters-btn" onclick="resetAllFilters()" class="text-brand-400 hover:text-brand-300 font-medium hover:underline flex items-center gap-1.5 hidden">
+                        <i class="fa-solid fa-arrow-rotate-left text-[10px]"></i> Скинути всі фільтри
+                    </button>
+                </div>
+
+                <!-- Popular Tags Cloud -->
+                <div class="pt-3 border-t border-dark-800/80 flex flex-wrap items-center gap-1.5 text-xs" id="popular-tags-cloud">
+                    <span class="text-slate-400 font-medium mr-1.5"><i class="fa-solid fa-tags text-[10px] text-accent-cyan mr-1"></i> Хмара тегів:</span>
+                </div>
+            </div>
+
+            <!-- Models Grid -->
+            <div id="models-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden text-center py-20 px-4 rounded-3xl bg-dark-900 border border-dark-800">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-dark-800 border border-dark-700 flex items-center justify-center text-slate-500 text-2xl">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Моделей не знайдено</h3>
+                <p class="text-sm text-slate-400 mt-1 max-w-sm mx-auto">
+                    Спробуйте змінити пошуковий запит або скинути активні фільтри категорій та тегів.
+                </p>
+                <button onclick="resetAllFilters()" class="mt-5 px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-brand-600/30">
+                    Скинути фільтри
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-dark-800 bg-dark-900/60 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-cube text-brand-500"></i>
+                <span>&copy; 2026 <strong>3D GALLERY Hub</strong>. Всі права захищено.</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/Daenox/3DMODELCATALOG" target="_blank" class="hover:text-white transition-colors flex items-center gap-1.5">
+                    <i class="fa-brands fa-github text-sm"></i> GitHub Репозиторій
+                </a>
+                <span class="text-dark-700">•</span>
+                <span class="text-emerald-400 flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Онлайн на GitHub Pages
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="static/js/models-data.js"></script>
+    <script src="static/js/catalog.js"></script>
+    <script src="static/js/main.js"></script>
+    <script>
+        let currentTag = '';
+
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                q: params.get('q') || '',
+                category: params.get('category') || '',
+                tag: params.get('tag') || '',
+                sort: params.get('sort') || 'newest'
+            };
+        }
+
+        function populateCategories() {
+            const catSelect = document.getElementById('category-select');
+            const categories = CatalogStore.getAllCategories();
+            catSelect.innerHTML = '';
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = (cat === 'Всі') ? '' : cat;
+                opt.textContent = cat;
+                catSelect.appendChild(opt);
+            });
+        }
+
+        function populateTagCloud() {
+            const container = document.getElementById('popular-tags-cloud');
+            const tags = CatalogStore.getPopularTags(12);
+            tags.forEach(([tag, count]) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => filterByTag(tag);
+                btn.className = 'tag-btn px-2.5 py-1 rounded-lg bg-dark-850 hover:bg-brand-600/20 hover:text-brand-300 border border-dark-700 text-slate-300 transition-colors';
+                btn.innerHTML = `#${tag} <span class="text-slate-500 text-[10px]">(${count})</span>`;
+                container.appendChild(btn);
+            });
+        }
+
+        function filterByTag(tag) {
+            currentTag = tag;
+            applyFilters();
+        }
+
+        function resetAllFilters() {
+            document.getElementById('gallery-search-input').value = '';
+            document.getElementById('category-select').value = '';
+            document.getElementById('sort-select').value = 'newest';
+            currentTag = '';
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const q = document.getElementById('gallery-search-input').value.trim();
+            const category = document.getElementById('category-select').value;
+            const sort = document.getElementById('sort-select').value;
+
+            // Update clear search button
+            const clearBtn = document.getElementById('clear-search-btn');
+            if (q) {
+                clearBtn.classList.remove('hidden');
+                clearBtn.onclick = () => {
+                    document.getElementById('gallery-search-input').value = '';
+                    applyFilters();
+                };
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            const models = CatalogStore.getAllModels({ query: q, category, tag: currentTag, sort });
+            renderModels(models);
+
+            // Update URL without page reload
+            const params = new URLSearchParams();
+            if (q) params.set('q', q);
+            if (category) params.set('category', category);
+            if (currentTag) params.set('tag', currentTag);
+            if (sort !== 'newest') params.set('sort', sort);
+            const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+            window.history.replaceState({}, '', newUrl);
+
+            // Active filters pills
+            renderActiveFilterPills(q, category, currentTag);
+        }
+
+        function renderActiveFilterPills(q, category, tag) {
+            const container = document.getElementById('active-filters-container');
+            const resetBtn = document.getElementById('reset-filters-btn');
+            
+            // Keep the count element
+            const countEl = document.getElementById('results-count');
+            container.innerHTML = `<span class="text-slate-400">Знайдено: <strong class="text-white font-mono" id="results-count">${countEl ? countEl.textContent : '0'}</strong> моделей</span>`;
+
+            let hasActive = false;
+            if (q) {
+                hasActive = true;
+                const pill = document.createElement('span');
+                pill.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-500/10 border border-brand-500/30 text-brand-300';
+                pill.innerHTML = `<i class="fa-solid fa-magnifying-glass text-[10px]"></i> "${q}" <button type="button" onclick="clearSearch()" class="hover:text-white ml-1">&times;</button>`;
+                container.appendChild(pill);
+            }
+            if (category) {
+                hasActive = true;
+                const pill = document.createElement('span');
+                pill.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-accent-cyan/10 border border-accent-cyan/30 text-accent-cyan';
+                pill.innerHTML = `<i class="fa-solid fa-folder text-[10px]"></i> ${category} <button type="button" onclick="clearCategory()" class="hover:text-white ml-1">&times;</button>`;
+                container.appendChild(pill);
+            }
+            if (tag) {
+                hasActive = true;
+                const pill = document.createElement('span');
+                pill.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-accent-purple/10 border border-accent-purple/30 text-purple-300';
+                pill.innerHTML = `<i class="fa-solid fa-tag text-[10px]"></i> #${tag} <button type="button" onclick="clearTag()" class="hover:text-white ml-1">&times;</button>`;
+                container.appendChild(pill);
+            }
+
+            if (hasActive) {
+                resetBtn.classList.remove('hidden');
+            } else {
+                resetBtn.classList.add('hidden');
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('gallery-search-input').value = '';
+            applyFilters();
+        }
+
+        function clearCategory() {
+            document.getElementById('category-select').value = '';
+            applyFilters();
+        }
+
+        function clearTag() {
+            currentTag = '';
+            applyFilters();
+        }
+
+        function renderModels(models) {
+            const grid = document.getElementById('models-grid');
+            const emptyState = document.getElementById('empty-state');
+            const countEl = document.getElementById('results-count');
+
+            countEl.textContent = models.length;
+            grid.innerHTML = '';
+
+            if (models.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            models.forEach(m => {
+                const card = document.createElement('div');
+                card.className = 'group flex flex-col bg-dark-900 border border-dark-700/80 hover:border-brand-500/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-brand-500/10 transition-all duration-300 hover:-translate-y-1';
+                
+                const thumbImg = m.thumbnail 
+                    ? `<img src="${m.thumbnail}" alt="${m.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">`
+                    : `<div class="w-full h-full flex items-center justify-center text-slate-600 bg-dark-950"><i class="fa-solid fa-cube text-4xl"></i></div>`;
+
+                const tagsList = m.tags ? m.tags.split(',').slice(0, 2).map(t => 
+                    `<button type="button" onclick="event.stopPropagation(); filterByTag('${t.trim()}')" class="px-2 py-0.5 rounded-md bg-dark-850 hover:bg-brand-500/20 text-slate-300 hover:text-brand-300 text-[10px] font-medium border border-dark-700 transition-colors">#${t.trim()}</button>`
+                ).join('') : '';
+
+                card.innerHTML = `
+                    <div class="relative aspect-[16/10] bg-dark-950 overflow-hidden">
+                        ${thumbImg}
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-transparent to-transparent opacity-80"></div>
+                        
+                        <!-- Format Badge -->
+                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
+                            <span class="px-2.5 py-1 rounded-lg bg-dark-900/90 backdrop-blur-md border border-dark-700 text-brand-400 text-[11px] font-extrabold tracking-wider font-mono shadow-md">
+                                ${m.file_format || 'GLB'}
+                            </span>
+                            <span class="px-2 py-1 rounded-lg bg-dark-900/90 backdrop-blur-md border border-dark-700 text-slate-300 text-[11px] font-mono">
+                                ${CatalogStore.formatFilesize(m.file_size)}
+                            </span>
+                        </div>
+
+                        <!-- Photo count badge -->
+                        <div class="absolute top-3 right-3">
+                            <span class="px-2.5 py-1 rounded-lg bg-dark-900/90 backdrop-blur-md border border-amber-500/30 text-amber-300 text-[11px] font-bold shadow-md flex items-center gap-1.5">
+                                <i class="fa-solid fa-camera"></i>
+                                <span>${m.photo_count} фото</span>
+                            </span>
+                        </div>
+
+                        <!-- Hover overlay -->
+                        <a href="model.html?id=${m.id}" class="absolute inset-0 flex items-center justify-center bg-dark-950/60 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[2px]">
+                            <span class="px-4 py-2 rounded-xl bg-brand-600 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-brand-600/50 scale-95 group-hover:scale-100 transition-transform">
+                                <i class="fa-solid fa-cube"></i> Відкрити 3D Перегляд
+                            </span>
+                        </a>
+                    </div>
+
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+                                <span class="text-accent-cyan font-semibold">${m.category}</span>
+                                <span class="flex items-center gap-1"><i class="fa-solid fa-eye text-slate-500"></i> ${m.views || 0}</span>
+                            </div>
+                            <h3 class="text-base font-bold text-white group-hover:text-brand-400 transition-colors line-clamp-1">
+                                <a href="model.html?id=${m.id}">${m.title}</a>
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                                ${m.description}
+                            </p>
+                        </div>
+
+                        <div class="pt-3 border-t border-dark-800 flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-1.5 text-slate-400">
+                                <i class="fa-solid fa-user-astronaut text-slate-500 text-[10px]"></i>
+                                <span class="truncate max-w-[100px]">${m.author}</span>
+                            </div>
+                            <div class="flex flex-wrap gap-1">
+                                ${tagsList}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateCategories();
+            populateTagCloud();
+
+            const params = getQueryParams();
+            if (params.q) document.getElementById('gallery-search-input').value = params.q;
+            if (params.category) document.getElementById('category-select').value = params.category;
+            if (params.sort) document.getElementById('sort-select').value = params.sort;
+            if (params.tag) currentTag = params.tag;
+
+            document.getElementById('category-select').addEventListener('change', applyFilters);
+            document.getElementById('sort-select').addEventListener('change', applyFilters);
+
+            applyFilters();
+        });
+    </script>
+</body>
+</html>

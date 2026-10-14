@@ -193,8 +193,22 @@ function initHeaderLiveSearch() {
         }
         
         debounceTimer = setTimeout(() => {
-            fetch(`/api/search?q=${encodeURIComponent(query)}`)
-                .then(res => res.json())
+            const getResults = () => {
+                if (window.CatalogStore) {
+                    const matches = window.CatalogStore.getAllModels({ query }).slice(0, 8);
+                    return Promise.resolve(matches.map(item => ({
+                        id: item.id,
+                        title: item.title,
+                        category: item.category,
+                        tags: item.tags,
+                        thumbnail: item.thumbnail,
+                        url: `model.html?id=${item.id}`
+                    })));
+                }
+                return fetch(`/api/search?q=${encodeURIComponent(query)}`).then(res => res.json());
+            };
+
+            getResults()
                 .then(data => {
                     resultsList.innerHTML = '';
                     if (data.length === 0) {
@@ -229,7 +243,7 @@ function initHeaderLiveSearch() {
                         
                         // "Переглянути всі в галереї" посилання
                         const footerLink = document.createElement('a');
-                        footerLink.href = `/gallery?q=${encodeURIComponent(query)}`;
+                        footerLink.href = `gallery.html?q=${encodeURIComponent(query)}`;
                         footerLink.className = 'block p-2.5 bg-dark-900 hover:bg-dark-750 text-center text-xs font-semibold text-brand-400 border-t border-dark-700/60 transition-colors';
                         footerLink.innerHTML = `Переглянути всі результати в Галереї &rarr;`;
                         resultsList.appendChild(footerLink);

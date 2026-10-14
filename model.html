@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="uk" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">3D Модель | 3D Gallery Hub</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand:  { 50:'#f0f7ff',100:'#e0effe',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8' },
+                        accent: { purple:'#8b5cf6', cyan:'#06b6d4', emerald:'#10b981' },
+                        dark:   { 950:'#090d16',900:'#0d1322',850:'#131b2e',800:'#19233c',700:'#23304f',600:'#33446b' }
+                    },
+                    fontFamily: { sans:['"Plus Jakarta Sans"','sans-serif'], mono:['"JetBrains Mono"','monospace'] }
+                }
+            }
+        }
+    </script>
+
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body class="bg-dark-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-dark-900/85 border-b border-dark-700/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
+                <a href="index.html" class="flex items-center gap-3 group shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-accent-purple to-accent-cyan p-0.5">
+                        <div class="w-full h-full bg-dark-900 rounded-[10px] flex items-center justify-center">
+                            <i class="fa-solid fa-cube text-transparent bg-clip-text bg-gradient-to-tr from-brand-500 to-accent-cyan text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5">
+                            3D<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-accent-cyan">GALLERY</span>
+                            <span class="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">Hub</span>
+                        </span>
+                        <span class="text-[11px] text-slate-400 font-medium">Каталог 3D моделей</span>
+                    </div>
+                </a>
+
+                <!-- Header search -->
+                <div class="hidden md:flex flex-1 max-w-md mx-4 relative" id="header-search-container">
+                    <form action="gallery.html" method="GET" class="w-full relative">
+                        <div class="relative flex items-center">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 text-sm pointer-events-none"></i>
+                            <input type="text" name="q" id="header-search-input" placeholder="Пошук за назвою або тегом..."
+                                autocomplete="off"
+                                class="w-full pl-10 pr-4 py-2 text-sm bg-dark-850 border border-dark-700/80 rounded-xl text-slate-200 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                        </div>
+                    </form>
+                    <div id="search-autocomplete-dropdown" class="absolute top-full left-0 right-0 mt-2 bg-dark-850 border border-dark-700 rounded-2xl shadow-2xl overflow-hidden hidden z-50 max-h-96 overflow-y-auto">
+                        <div id="search-results-list" class="divide-y divide-dark-750"></div>
+                    </div>
+                </div>
+
+                <nav class="flex items-center gap-1 sm:gap-2">
+                    <a href="index.html" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-dark-800">
+                        <i class="fa-solid fa-house mr-1.5 text-xs"></i><span>Головна</span>
+                    </a>
+                    <a href="gallery.html" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-dark-800">
+                        <i class="fa-solid fa-shapes mr-1.5 text-xs text-accent-cyan"></i><span>Галерея</span>
+                    </a>
+                    <a href="add.html" class="ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white shadow-lg transition-all hover:scale-[1.02]">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span class="hidden sm:inline">Додати модель</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Not Found (shown if model not found) -->
+    <div id="not-found" class="hidden flex-grow flex flex-col items-center justify-center gap-6 py-32 text-center">
+        <i class="fa-solid fa-triangle-exclamation text-5xl text-amber-400"></i>
+        <h1 class="text-3xl font-extrabold text-white">Модель не знайдена</h1>
+        <p class="text-slate-400 max-w-sm">Можливо, вона була видалена або ID вказано невірно.</p>
+        <a href="gallery.html" class="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold text-sm transition-all">
+            ← Повернутись до галереї
+        </a>
+    </div>
+
+    <!-- Main Content (filled by JS) -->
+    <main id="model-content" class="hidden flex-grow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+            <!-- Breadcrumb -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <nav class="flex items-center gap-2 text-xs text-slate-400">
+                    <a href="index.html" class="hover:text-white transition-colors">Головна</a>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-600"></i>
+                    <a href="gallery.html" class="hover:text-white transition-colors">Галерея</a>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-600"></i>
+                    <a id="breadcrumb-category" href="gallery.html" class="hover:text-white transition-colors"></a>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-600"></i>
+                    <span id="breadcrumb-title" class="text-slate-200 font-medium truncate max-w-[200px]"></span>
+                </nav>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="deleteModel()" class="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 text-xs font-semibold border border-rose-500/30 transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-trash-can"></i> Видалити
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Grid: 3D Viewer + Info -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                <!-- Left: 3D Viewer -->
+                <div class="lg:col-span-8 space-y-4">
+                    <div id="viewer-container" class="relative bg-dark-900 border border-dark-700/80 rounded-3xl overflow-hidden shadow-2xl h-[420px] sm:h-[540px]">
+                        <!-- Model viewer injected by JS -->
+                    </div>
+
+                    <!-- Viewer hints -->
+                    <div class="flex items-center justify-between text-xs text-slate-400 px-2">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-computer-mouse text-brand-400"></i>
+                            <span>Обертайте лівою кнопкою миші, масштабуйте коліщатком</span>
+                        </span>
+                        <span id="model-id-badge" class="font-mono text-slate-500"></span>
+                    </div>
+                </div>
+
+                <!-- Right: Details -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="bg-dark-900 border border-dark-700/80 rounded-3xl p-6 sm:p-7 shadow-xl space-y-6">
+
+                        <!-- Title & Category -->
+                        <div>
+                            <div class="flex items-center gap-2 mb-2">
+                                <a id="detail-category-link" href="gallery.html" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-dark-800 text-brand-400 border border-dark-700 hover:border-brand-500/40 transition-colors"></a>
+                                <span id="detail-format" class="px-2 py-0.5 rounded text-[11px] font-mono font-bold bg-dark-800 text-slate-300 border border-dark-700"></span>
+                            </div>
+                            <h1 id="detail-title" class="text-2xl font-extrabold text-white tracking-tight"></h1>
+                            <p class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                                <i class="fa-regular fa-user text-slate-500"></i>
+                                <span>Автор: <strong id="detail-author" class="text-slate-200"></strong></span>
+                            </p>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="border-t border-dark-800 pt-4">
+                            <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Опис моделі</h2>
+                            <p id="detail-description" class="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line"></p>
+                        </div>
+
+                        <!-- Tags -->
+                        <div id="detail-tags-section" class="border-t border-dark-800 pt-4">
+                            <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Теги</h2>
+                            <div id="detail-tags" class="flex flex-wrap gap-1.5"></div>
+                        </div>
+
+                        <!-- Technical Specs -->
+                        <div class="border-t border-dark-800 pt-4 space-y-2.5 text-xs">
+                            <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Технічні характеристики</h2>
+                            <div class="flex justify-between py-1.5 border-b border-dark-800/60">
+                                <span class="text-slate-400">Полігони / Сітка:</span>
+                                <span id="spec-poly" class="font-semibold text-slate-200 font-mono"></span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-dark-800/60">
+                                <span class="text-slate-400">Формат файлу:</span>
+                                <span id="spec-format" class="font-semibold text-brand-400 font-mono"></span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-dark-800/60">
+                                <span class="text-slate-400">Розмір файлу:</span>
+                                <span id="spec-size" class="font-semibold text-slate-200 font-mono"></span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-dark-800/60">
+                                <span class="text-slate-400">Дата додавання:</span>
+                                <span id="spec-date" class="font-semibold text-slate-200"></span>
+                            </div>
+                            <div class="flex justify-between py-1.5">
+                                <span class="text-slate-400">Переглядів:</span>
+                                <span id="spec-views" class="font-semibold text-slate-200 font-mono"></span>
+                            </div>
+                        </div>
+
+                        <!-- Download button -->
+                        <div id="download-btn-container" class="pt-2">
+                            <a id="download-btn" href="#"
+                                class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-lg transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-download"></i>
+                                <span id="download-label">Завантажити 3D Модель</span>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo Gallery Section -->
+            <section class="bg-dark-900 border border-dark-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-dark-800 pb-5">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400 mb-1">
+                            <i class="fa-solid fa-camera"></i> Фотоальбом
+                        </div>
+                        <h2 class="text-2xl font-extrabold text-white tracking-tight flex items-center gap-3">
+                            Фотогалерея моделі
+                            <span id="photos-count-badge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20"></span>
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                            Рендери, ракурси та детальні знімки. Натисніть на будь-яке фото для повноекранного перегляду.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Photos Grid -->
+                <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+
+                <!-- No photos empty state -->
+                <div id="no-photos" class="hidden text-center py-12 border-2 border-dashed border-dark-800 rounded-2xl p-6">
+                    <i class="fa-solid fa-images text-4xl text-slate-600 mb-3"></i>
+                    <h3 class="text-base font-bold text-white">У цієї моделі ще немає додаткових фото</h3>
+                    <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                        Завантажте фотографії, рендери та скріншоти через форму додавання моделі.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Related Models -->
+            <section id="related-section" class="space-y-6 pt-2 hidden">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-brand-400"></i>
+                        <span id="related-title">Схожі моделі</span>
+                    </h2>
+                    <a id="related-more-link" href="gallery.html" class="text-xs font-semibold text-brand-400 hover:text-brand-300">
+                        Більше в категорії →
+                    </a>
+                </div>
+                <div id="related-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Photo Lightbox -->
+    <div id="photo-lightbox" class="fixed inset-0 z-[100] flex items-center justify-center bg-dark-950/95 backdrop-blur-md hidden">
+        <button id="lightbox-close" class="absolute top-4 right-4 p-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 text-slate-200 text-sm">
+            <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+        <button id="lightbox-prev" class="absolute left-3 sm:left-6 p-3 rounded-xl bg-dark-800 hover:bg-brand-600 text-slate-200 transition-all">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="max-w-5xl max-h-[90vh] w-full mx-12 sm:mx-20 flex flex-col items-center gap-3">
+            <img id="lightbox-img" src="" alt="" class="max-h-[80vh] w-auto max-w-full rounded-2xl shadow-2xl object-contain">
+            <div class="text-center">
+                <p id="lightbox-caption" class="text-sm font-semibold text-white"></p>
+                <p id="lightbox-counter" class="text-xs text-slate-400 mt-1"></p>
+            </div>
+        </div>
+        <button id="lightbox-next" class="absolute right-3 sm:right-6 p-3 rounded-xl bg-dark-800 hover:bg-brand-600 text-slate-200 transition-all">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-dark-800 bg-dark-900/60 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-cube text-brand-500"></i>
+                <span>&copy; 2026 <strong>3D GALLERY Hub</strong>. Всі права захищено.</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/Daenox/3DMODELCATALOG" target="_blank" class="hover:text-white transition-colors flex items-center gap-1.5">
+                    <i class="fa-brands fa-github text-sm"></i> GitHub
+                </a>
+                <span class="text-emerald-400 flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> GitHub Pages
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="static/js/models-data.js"></script>
+    <script src="static/js/catalog.js"></script>
+    <script src="static/js/main.js"></script>
+    <script>
+        let currentModel = null;
+        let lightboxPhotos = [];
+        let lightboxIndex = 0;
+
+        function getModelId() {
+            return new URLSearchParams(window.location.search).get('id');
+        }
+
+        function renderViewer(m) {
+            const container = document.getElementById('viewer-container');
+            const isGLB = m.model_file && (m.file_format === 'GLB' || m.file_format === 'GLTF'
+                || m.model_file.endsWith('.glb') || m.model_file.endsWith('.gltf'));
+
+            if (isGLB) {
+                const posterAttr = m.thumbnail ? `poster="${m.thumbnail}"` : '';
+                container.innerHTML = `
+                    <model-viewer
+                        id="viewer-3d"
+                        src="${m.model_file}"
+                        ${posterAttr}
+                        alt="${m.title}"
+                        auto-rotate
+                        rotation-per-second="30deg"
+                        camera-controls
+                        touch-action="pan-y"
+                        shadow-intensity="1.5"
+                        shadow-softness="0.8"
+                        exposure="1.0"
+                        environment-image="neutral"
+                        interaction-prompt="auto"
+                        class="w-full h-full bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950"
+                    >
+                        <div slot="poster" class="w-full h-full flex items-center justify-center bg-dark-950">
+                            ${m.thumbnail ? `<img src="${m.thumbnail}" class="w-full h-full object-cover opacity-60">` : ''}
+                            <div class="absolute flex flex-col items-center gap-2">
+                                <i class="fa-solid fa-spinner fa-spin text-3xl text-brand-400"></i>
+                                <span class="text-xs font-bold text-slate-300">Завантаження 3D моделі...</span>
+                            </div>
+                        </div>
+                    </model-viewer>
+                    <!-- Controls overlay -->
+                    <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+                        <div class="flex items-center gap-2 pointer-events-auto">
+                            <button onclick="toggleAutoRotate()" class="px-3 py-1.5 rounded-xl bg-dark-900/85 backdrop-blur-md border border-dark-700/80 text-xs font-medium text-slate-200 hover:text-white hover:bg-dark-800 transition-all flex items-center gap-1.5 shadow-lg">
+                                <i class="fa-solid fa-arrows-rotate text-brand-400"></i>
+                                <span id="rotate-label">Пауза обертання</span>
+                            </button>
+                            <button onclick="resetCamera()" class="px-3 py-1.5 rounded-xl bg-dark-900/85 backdrop-blur-md border border-dark-700/80 text-xs font-medium text-slate-200 hover:text-white hover:bg-dark-800 transition-all flex items-center gap-1.5 shadow-lg">
+                                <i class="fa-solid fa-crosshairs text-accent-cyan"></i>
+                                <span>Скинути ракурс</span>
+                            </button>
+                        </div>
+                        <div class="pointer-events-auto">
+                            <button onclick="toggleFullscreen()" class="p-2.5 rounded-xl bg-dark-900/85 backdrop-blur-md border border-dark-700/80 text-xs font-medium text-slate-200 hover:text-white hover:bg-dark-800 transition-all shadow-lg" title="Повноекранний режим">
+                                <i class="fa-solid fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- 3D Badge -->
+                    <div class="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1 rounded-xl bg-brand-600/90 text-white text-xs font-bold shadow-lg backdrop-blur-md">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span>Інтерактивний 3D перегляд</span>
+                    </div>
+                `;
+            } else if (m.thumbnail) {
+                container.innerHTML = `
+                    <img src="${m.thumbnail}" alt="${m.title}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark-950 via-transparent to-transparent flex items-end p-6">
+                        <div class="text-xs text-slate-300 bg-dark-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-dark-700">
+                            Формат: ${m.file_format || 'Зображення'}. Завантажте файл для відкриття у 3D редакторі.
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-500">
+                        <i class="fa-solid fa-cube text-6xl mb-3"></i>
+                        <p class="text-sm">3D файл або обкладинка не завантажені</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderPage(m) {
+            document.title = `${m.title} | 3D Gallery Hub`;
+            document.getElementById('page-title').textContent = `${m.title} | 3D Gallery Hub`;
+
+            // Breadcrumb
+            document.getElementById('breadcrumb-title').textContent = m.title;
+            const catLink = document.getElementById('breadcrumb-category');
+            catLink.textContent = m.category;
+            catLink.href = `gallery.html?category=${encodeURIComponent(m.category)}`;
+
+            // Viewer
+            renderViewer(m);
+            document.getElementById('model-id-badge').textContent = `ID: #${m.id}`;
+
+            // Right panel
+            const detailCatLink = document.getElementById('detail-category-link');
+            detailCatLink.textContent = m.category;
+            detailCatLink.href = `gallery.html?category=${encodeURIComponent(m.category)}`;
+
+            document.getElementById('detail-format').textContent = m.file_format || '';
+            document.getElementById('detail-title').textContent = m.title;
+            document.getElementById('detail-author').textContent = m.author;
+            document.getElementById('detail-description').textContent = m.description || 'Опис відсутній.';
+
+            // Tags
+            const tagsContainer = document.getElementById('detail-tags');
+            if (m.tags) {
+                m.tags.split(',').forEach(t => {
+                    const a = document.createElement('a');
+                    a.href = `gallery.html?tag=${encodeURIComponent(t.trim())}`;
+                    a.className = 'px-2.5 py-1 rounded-lg text-xs bg-dark-800 hover:bg-brand-600/20 text-slate-300 hover:text-brand-300 border border-dark-700 transition-colors flex items-center gap-1';
+                    a.innerHTML = `<span class="text-accent-cyan">#</span>${t.trim()}`;
+                    tagsContainer.appendChild(a);
+                });
+            } else {
+                document.getElementById('detail-tags-section').classList.add('hidden');
+            }
+
+            // Specs
+            document.getElementById('spec-poly').textContent = m.poly_count || 'Low-Poly';
+            document.getElementById('spec-format').textContent = m.file_format || 'Не вказано';
+            document.getElementById('spec-size').textContent = CatalogStore.formatFilesize(m.file_size);
+            document.getElementById('spec-date').textContent = CatalogStore.formatDate(m.created_at);
+            document.getElementById('spec-views').textContent = m.views || 0;
+
+            // Download button
+            if (m.model_file) {
+                const btn = document.getElementById('download-btn');
+                btn.href = m.model_file;
+                btn.download = '';
+                document.getElementById('download-label').textContent = `Завантажити 3D Модель (${CatalogStore.formatFilesize(m.file_size)})`;
+            } else {
+                document.getElementById('download-btn-container').classList.add('hidden');
+            }
+
+            // Photos
+            const photosGrid = document.getElementById('photos-grid');
+            const noPhotos = document.getElementById('no-photos');
+            const photos = m.photos || [];
+            document.getElementById('photos-count-badge').textContent = `${photos.length} фотографій`;
+            lightboxPhotos = photos;
+
+            if (photos.length > 0) {
+                noPhotos.classList.add('hidden');
+                photos.forEach((photo, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'group relative aspect-[4/3] rounded-2xl overflow-hidden bg-dark-950 border border-dark-700/80 hover:border-amber-500/60 cursor-pointer shadow-md transition-all duration-300 hover:scale-[1.02]';
+                    div.onclick = () => openLightbox(idx);
+                    div.innerHTML = `
+                        <img src="${photo.photo_path}" alt="${photo.caption || m.title}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 gallery-image-item"
+                            data-caption="${photo.caption || m.title}"
+                            data-full="${photo.photo_path}"
+                            loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
+                            <span class="self-end p-2 rounded-lg bg-dark-900/80 backdrop-blur-md text-white text-xs">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i>
+                            </span>
+                            <p class="text-xs font-medium text-slate-200 line-clamp-1">${photo.caption || `Фото #${idx + 1}`}</p>
+                        </div>
+                        <div class="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-mono bg-dark-950/80 text-amber-400 border border-amber-500/30 backdrop-blur-sm">
+                            #${idx + 1}
+                        </div>
+                    `;
+                    photosGrid.appendChild(div);
+                });
+            } else {
+                noPhotos.classList.remove('hidden');
+            }
+
+            // Related models
+            const related = CatalogStore.getAllModels({ category: m.category })
+                .filter(rm => String(rm.id) !== String(m.id))
+                .slice(0, 4);
+
+            if (related.length > 0) {
+                const relatedSection = document.getElementById('related-section');
+                relatedSection.classList.remove('hidden');
+                document.getElementById('related-title').textContent = `Схожі моделі з категорії «${m.category}»`;
+                const moreLink = document.getElementById('related-more-link');
+                moreLink.href = `gallery.html?category=${encodeURIComponent(m.category)}`;
+                const relatedGrid = document.getElementById('related-grid');
+                related.forEach(rm => {
+                    const article = document.createElement('article');
+                    article.className = 'group bg-dark-900 border border-dark-700/70 hover:border-brand-500/50 rounded-2xl overflow-hidden shadow-md transition-all flex flex-col';
+                    const thumbHtml = rm.thumbnail
+                        ? `<img src="${rm.thumbnail}" alt="${rm.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">`
+                        : `<div class="w-full h-full flex items-center justify-center text-slate-600 bg-dark-900"><i class="fa-solid fa-cube text-3xl"></i></div>`;
+                    article.innerHTML = `
+                        <div class="relative aspect-[4/3] bg-dark-950 overflow-hidden">
+                            ${thumbHtml}
+                            <div class="absolute top-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded bg-dark-950/80 text-amber-300 border border-amber-500/30">${rm.photo_count} фото</div>
+                        </div>
+                        <div class="p-4 flex-1 flex flex-col justify-between">
+                            <h3 class="text-xs font-bold text-white group-hover:text-brand-400 transition-colors line-clamp-1">
+                                <a href="model.html?id=${rm.id}">${rm.title}</a>
+                            </h3>
+                            <div class="mt-3 flex items-center justify-between text-[10px] text-slate-400 border-t border-dark-800 pt-2">
+                                <span>${rm.author}</span>
+                                <a href="model.html?id=${rm.id}" class="text-brand-400 hover:underline">3D & Фото →</a>
+                            </div>
+                        </div>
+                    `;
+                    relatedGrid.appendChild(article);
+                });
+            }
+        }
+
+        // Lightbox
+        function openLightbox(idx) {
+            lightboxIndex = idx;
+            updateLightbox();
+            document.getElementById('photo-lightbox').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('photo-lightbox').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function updateLightbox() {
+            const photo = lightboxPhotos[lightboxIndex];
+            if (!photo) return;
+            document.getElementById('lightbox-img').src = photo.photo_path;
+            document.getElementById('lightbox-caption').textContent = photo.caption || `Фото #${lightboxIndex + 1}`;
+            document.getElementById('lightbox-counter').textContent = `${lightboxIndex + 1} / ${lightboxPhotos.length}`;
+        }
+
+        function prevPhoto() {
+            lightboxIndex = (lightboxIndex - 1 + lightboxPhotos.length) % lightboxPhotos.length;
+            updateLightbox();
+        }
+
+        function nextPhoto() {
+            lightboxIndex = (lightboxIndex + 1) % lightboxPhotos.length;
+            updateLightbox();
+        }
+
+        // 3D Viewer controls
+        function toggleAutoRotate() {
+            const viewer = document.getElementById('viewer-3d');
+            const label = document.getElementById('rotate-label');
+            if (!viewer) return;
+            if (viewer.hasAttribute('auto-rotate')) {
+                viewer.removeAttribute('auto-rotate');
+                if (label) label.textContent = 'Увімкнути обертання';
+            } else {
+                viewer.setAttribute('auto-rotate', '');
+                if (label) label.textContent = 'Пауза обертання';
+            }
+        }
+
+        function resetCamera() {
+            const viewer = document.getElementById('viewer-3d');
+            if (!viewer) return;
+            viewer.cameraOrbit = '0deg 75deg 105%';
+            viewer.fieldOfView = 'auto';
+            viewer.jumpCameraToGoal && viewer.jumpCameraToGoal();
+        }
+
+        function toggleFullscreen() {
+            const viewer = document.getElementById('viewer-3d');
+            if (!viewer) return;
+            if (viewer.requestFullscreen) viewer.requestFullscreen();
+            else if (viewer.webkitRequestFullscreen) viewer.webkitRequestFullscreen();
+        }
+
+        function deleteModel() {
+            if (!currentModel) return;
+            if (!confirm(`Ви впевнені, що хочете видалити «${currentModel.title}» та всі її фотографії?`)) return;
+            CatalogStore.deleteModel(currentModel.id);
+            window.location.href = 'gallery.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const id = getModelId();
+            if (!id) {
+                document.getElementById('not-found').classList.remove('hidden');
+                return;
+            }
+
+            const model = CatalogStore.getModelById(id);
+            if (!model) {
+                document.getElementById('not-found').classList.remove('hidden');
+                return;
+            }
+
+            currentModel = model;
+            CatalogStore.incrementViews(id);
+            document.getElementById('model-content').classList.remove('hidden');
+            document.getElementById('model-content').classList.add('block');
+            renderPage(model);
+
+            // Lightbox events
+            document.getElementById('lightbox-close').onclick = closeLightbox;
+            document.getElementById('lightbox-prev').onclick = prevPhoto;
+            document.getElementById('lightbox-next').onclick = nextPhoto;
+            document.getElementById('photo-lightbox').addEventListener('click', e => {
+                if (e.target === document.getElementById('photo-lightbox')) closeLightbox();
+            });
+            document.addEventListener('keydown', e => {
+                if (document.getElementById('photo-lightbox').classList.contains('hidden')) return;
+                if (e.key === 'ArrowLeft') prevPhoto();
+                if (e.key === 'ArrowRight') nextPhoto();
+                if (e.key === 'Escape') closeLightbox();
+            });
+        });
+    </script>
+</body>
+</html>

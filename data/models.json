@@ -1,0 +1,228 @@
+[
+  {
+    "id": 1,
+    "title": "Кіберпанк Бойовий Шолом",
+    "description": "Деталізований шолом бойового дрона або пілота майбутнього з текстурами високої роздільної здатності PBR, слідами пошкоджень та потертостями скла.",
+    "category": "Персонажі та Екіпірування",
+    "tags": "sci-fi, кіберпанк, шолом, броня, зброя, high-poly",
+    "thumbnail": "static/uploads/thumbnails/thumb_1.jpg",
+    "model_file": "static/uploads/models/damaged_helmet.glb",
+    "file_format": "GLB",
+    "file_size": 3773916,
+    "poly_count": "45,200",
+    "author": "TechVanguard Studio",
+    "views": 0,
+    "created_at": "2026-10-14 17:02:14",
+    "updated_at": "2026-10-14 17:02:14",
+    "photos": [
+      {
+        "id": 1,
+        "model_id": 1,
+        "photo_path": "static/uploads/photos/photo_1_1.jpg",
+        "caption": "Вид спереду (Front View)",
+        "created_at": "2026-10-14 17:02:15"
+      },
+      {
+        "id": 2,
+        "model_id": 1,
+        "photo_path": "static/uploads/photos/photo_1_2.jpg",
+        "caption": "Деталізація візора (Wireframe & Texture)",
+        "created_at": "2026-10-14 17:02:16"
+      },
+      {
+        "id": 3,
+        "model_id": 1,
+        "photo_path": "static/uploads/photos/photo_1_3.jpg",
+        "caption": "Рендер у студійному освітленні",
+        "created_at": "2026-10-14 17:02:17"
+      }
+    ],
+    "photo_count": 3
+  },
+  {
+    "id": 2,
+    "title": "Ретро Фотоапарат Vintage 1950",
+    "description": "Класична плівкова фотокамера середини XX століття. Металевий корпус, шкіряні вставки та скляна оптика. Ідеально для історичних ігор та візуалізацій.",
+    "category": "Предмети та Реквізит",
+    "tags": "ретро, фотокамера, вінтаж, техніка, реквізит, realistic",
+    "thumbnail": "static/uploads/thumbnails/thumb_2.jpg",
+    "model_file": "static/uploads/models/antique_camera.glb",
+    "file_format": "GLB",
+    "file_size": 20199648,
+    "poly_count": "24,800",
+    "author": "ClassicProps",
+    "views": 1,
+    "created_at": "2026-10-14 17:02:24",
+    "updated_at": "2026-10-14 17:02:24",
+    "photos": [
+      {
+        "id": 4,
+        "model_id": 2,
+        "photo_path": "static/uploads/photos/photo_2_1.jpg",
+        "caption": "Макро об'єктива та затвора",
+        "created_at": "2026-10-14 17:02:25"
+      },
+      {
+        "id": 5,
+        "model_id": 2,
+        "photo_path": "static/uploads/photos/photo_2_2.jpg",
+        "caption": "Задня панель та відкритий відсік плівки",
+        "created_at": "2026-10-14 17:02:26"
+      },
+      {
+        "id": 6,
+        "model_id": 2,
+        "photo_path": "static/uploads/photos/photo_2_3.jpg",
+        "caption": "Ортографічна проекція збоку",
+        "created_at": "2026-10-14 17:02:27"
+      }
+    ],
+    "photo_count": 3
+  },
+  {
+    "id": 3,
+    "title": "Кажанчик Резинова Качечка (Duck)",
+    "description": "Легендарна жовта качка для ванної та дебагінгу коду. Еталонна 3D модель glTF стандарту Khronos Group з гладкими нормалями.",
+    "category": "Іграшки та Сувеніри",
+    "tags": "качка, іграшка, low-poly, жовтий, дебаг, мультяшний",
+    "thumbnail": "static/uploads/thumbnails/thumb_3.jpg",
+    "model_file": "static/uploads/models/duck.glb",
+    "file_format": "GLB",
+    "file_size": 120484,
+    "poly_count": "4,120",
+    "author": "Sony Computer Entertainment",
+    "views": 0,
+    "created_at": "2026-10-14 17:02:29",
+    "updated_at": "2026-10-14 17:02:29",
+    "photos": [
+      {
+        "id": 7,
+        "model_id": 3,
+        "photo_path": "static/uploads/photos/photo_3_1.jpg",
+        "caption": "Рендер на воді з відблисками",
+        "created_at": "2026-10-14 17:02:30"
+      },
+      {
+        "id": 8,
+        "model_id": 3,
+        "photo_path": "static/uploads/photos/photo_3_2.jpg",
+        "caption": "Сітка полігонів (Wireframe Mode)",
+        "created_at": "2026-10-14 17:02:31"
+      }
+    ],
+    "photo_count": 2
+  },
+  {
+    "id": 4,
+    "title": "Вінтажний Бумбокс 80-х (BoomBox)",
+    "description": "Справжній магнітофон епохи диско та брейкдансу. Подвійна касетна дека, радіоантена, динаміки високого діапазону та аналогові регулятори.",
+    "category": "Електроніка та Аудіо",
+    "tags": "бумбокс, музика, ретро, 80s, аудіо, стерео",
+    "thumbnail": "static/uploads/thumbnails/thumb_4.jpg",
+    "model_file": "static/uploads/models/boombox.glb",
+    "file_format": "GLB",
+    "file_size": 10945640,
+    "poly_count": "18,600",
+    "author": "WaveAudio 3D",
+    "views": 0,
+    "created_at": "2026-10-14 17:02:35",
+    "updated_at": "2026-10-14 17:02:35",
+    "photos": [
+      {
+        "id": 9,
+        "model_id": 4,
+        "photo_path": "static/uploads/photos/photo_4_1.jpg",
+        "caption": "Панель управління та касетний привід",
+        "created_at": "2026-10-14 17:02:36"
+      },
+      {
+        "id": 10,
+        "model_id": 4,
+        "photo_path": "static/uploads/photos/photo_4_2.jpg",
+        "caption": "Рендер у неоновому клубі",
+        "created_at": "2026-10-14 17:02:37"
+      },
+      {
+        "id": 11,
+        "model_id": 4,
+        "photo_path": "static/uploads/photos/photo_4_3.jpg",
+        "caption": "Вигляд ззаду: порти підключення",
+        "created_at": "2026-10-14 17:02:38"
+      }
+    ],
+    "photo_count": 3
+  },
+  {
+    "id": 5,
+    "title": "Старовинний Масляний Ліхтар",
+    "description": "Атмосферний підвісний ліхтар для середньовічних та фентезійних сцен. Скляна колба, коване залізо та текстура патини.",
+    "category": "Архітектура та Інтер'єр",
+    "tags": "ліхтар, фентезі, середньовіччя, світло, кований метал, патина",
+    "thumbnail": "static/uploads/thumbnails/thumb_5.jpg",
+    "model_file": "static/uploads/models/lantern.glb",
+    "file_format": "GLB",
+    "file_size": 9872848,
+    "poly_count": "15,340",
+    "author": "MedievalCraft",
+    "views": 1,
+    "created_at": "2026-10-14 17:02:42",
+    "updated_at": "2026-10-14 17:02:42",
+    "photos": [
+      {
+        "id": 12,
+        "model_id": 5,
+        "photo_path": "static/uploads/photos/photo_5_1.jpg",
+        "caption": "Ефект палаючого вогню всередині",
+        "created_at": "2026-10-14 17:02:43"
+      },
+      {
+        "id": 13,
+        "model_id": 5,
+        "photo_path": "static/uploads/photos/photo_5_2.jpg",
+        "caption": "Детальне кріплення ланцюга",
+        "created_at": "2026-10-14 17:02:44"
+      }
+    ],
+    "photo_count": 2
+  },
+  {
+    "id": 6,
+    "title": "Органічне Авокадо (Food 3D Scan)",
+    "description": "Фотограмметричний 3D скан свіжого авокадо з кісточкою. Реалістична мікротекстура шкірки та м'якоті. Підходить для кулінарних візуалізацій.",
+    "category": "Природа та Їжа",
+    "tags": "авокадо, їжа, органічний, скан, фотограмметрія, природа",
+    "thumbnail": "static/uploads/thumbnails/thumb_6.jpg",
+    "model_file": "static/uploads/models/avocado.glb",
+    "file_format": "GLB",
+    "file_size": 8328156,
+    "poly_count": "8,200",
+    "author": "NatureScan 3D",
+    "views": 9,
+    "created_at": "2026-10-14 17:02:47",
+    "updated_at": "2026-10-14 17:02:47",
+    "photos": [
+      {
+        "id": 14,
+        "model_id": 6,
+        "photo_path": "static/uploads/photos/photo_6_1.jpg",
+        "caption": "Текстура кісточки зблизька",
+        "created_at": "2026-10-14 17:02:49"
+      },
+      {
+        "id": 15,
+        "model_id": 6,
+        "photo_path": "static/uploads/photos/photo_6_2.jpg",
+        "caption": "Рельєф шорсткої шкірки",
+        "created_at": "2026-10-14 17:02:50"
+      },
+      {
+        "id": 16,
+        "model_id": 6,
+        "photo_path": "static/uploads/photos/photo_6_3.jpg",
+        "caption": "Композиція у розрізі",
+        "created_at": "2026-10-14 17:02:51"
+      }
+    ],
+    "photo_count": 3
+  }
+]

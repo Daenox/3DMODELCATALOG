@@ -1,10 +1,101 @@
 /**
- * CatalogStore - Client-side data store for GitHub Pages
+ * CatalogStore - Client-side data store for GitHub Pages (with IndexedDB for 3D files & images)
  */
+
+// IndexedDB Helper for storing large 3D model blobs and images
+const DB_NAME = '3DModelCatalogDB';
+const DB_VERSION = 1;
+const STORE_FILES = 'model_files';
+
+function openCatalogDB() {
+    return new Promise((resolve) => {
+        if (!window.indexedDB) {
+            resolve(null);
+            return;
+        }
+        const req = indexedDB.open(DB_NAME, DB_VERSION);
+        req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(STORE_FILES)) {
+                db.createObjectStore(STORE_FILES);
+            }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => {
+            console.warn('IndexedDB unavailable, falling back:', req.error);
+            resolve(null);
+        };
+    });
+}
+
+async function dbSaveFile(key, blobOrFile) {
+    try {
+        const db = await openCatalogDB();
+        if (!db) return false;
+        return new Promise((resolve) => {
+            const tx = db.transaction(STORE_FILES, 'readwrite');
+            const store = tx.objectStore(STORE_FILES);
+            store.put(blobOrFile, key);
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => resolve(false);
+        });
+    } catch (e) {
+        return false;
+    }
+}
+
+async function dbGetFile(key) {
+    try {
+        const db = await openCatalogDB();
+        if (!db) return null;
+        return new Promise((resolve) => {
+            const tx = db.transaction(STORE_FILES, 'readonly');
+            const store = tx.objectStore(STORE_FILES);
+            const req = store.get(key);
+            req.onsuccess = () => resolve(req.result || null);
+            req.onerror = () => resolve(null);
+        });
+    } catch (e) {
+        return null;
+    }
+}
+
+async function dbDeleteFile(key) {
+    try {
+        const db = await openCatalogDB();
+        if (!db) return;
+        const tx = db.transaction(STORE_FILES, 'readwrite');
+        tx.objectStore(STORE_FILES).delete(key);
+    } catch (e) {}
+}
+
+const blobUrlCache = new Map();
+
 const CatalogStore = {
     CUSTOM_KEY: '3d_catalog_custom_models',
     VIEWS_KEY: '3d_catalog_views',
     DELETED_KEY: '3d_catalog_deleted_ids',
+
+    // IndexedDB access
+    saveFile: dbSaveFile,
+    getFile: dbGetFile,
+    deleteFile: dbDeleteFile,
+
+    async resolveModelBlobUrl(model) {
+        if (!model) return model;
+        if (model.model_file_key) {
+            if (!blobUrlCache.has(model.model_file_key)) {
+                const blob = await dbGetFile(model.model_file_key);
+                if (blob) {
+                    blobUrlCache.set(model.model_file_key, URL.createObjectURL(blob));
+                }
+            }
+            if (blobUrlCache.has(model.model_file_key)) {
+                model.model_file = blobUrlCache.get(model.model_file_key);
+            }
+        }
+        return model;
+    },
 
     getViews() {
         try {
@@ -46,7 +137,9 @@ const CatalogStore = {
     saveCustomModels(models) {
         try {
             localStorage.setItem(this.CUSTOM_KEY, JSON.stringify(models));
-        } catch (e) {}
+        } catch (e) {
+            console.warn('localStorage save warning (quota):', e);
+        }
     },
 
     getRawList() {
@@ -59,11 +152,15 @@ const CatalogStore = {
 
         return combined.map(m => {
             const extraViews = viewsMap[String(m.id)] || 0;
-            return {
+            const modelObj = {
                 ...m,
                 views: (m.views || 0) + extraViews,
                 photo_count: (m.photos && m.photos.length) ? m.photos.length : (m.photo_count || 0)
             };
+            if (m.model_file_key && blobUrlCache.has(m.model_file_key)) {
+                modelObj.model_file = blobUrlCache.get(m.model_file_key);
+            }
+            return modelObj;
         });
     },
 
@@ -154,16 +251,31 @@ const CatalogStore = {
         };
     },
 
-    addModel(data) {
+    async addModel(data) {
         const custom = this.getCustomModels();
+        const newId = Date.now();
+
+        let modelFileKey = null;
+        let modelFileUrl = data.model_file || '';
+
+        // If user uploaded a 3D File (Blob/File)
+        if (data.model_file_blob) {
+            modelFileKey = `model_file_${newId}`;
+            await dbSaveFile(modelFileKey, data.model_file_blob);
+            blobUrlCache.set(modelFileKey, URL.createObjectURL(data.model_file_blob));
+            modelFileUrl = blobUrlCache.get(modelFileKey);
+        }
+
         const newModel = {
-            id: Date.now(),
+            id: newId,
             title: data.title,
             description: data.description || '',
             category: data.category || 'Загальне',
             tags: data.tags || '',
             thumbnail: data.thumbnail || '',
-            model_file: data.model_file || '',
+            model_file: modelFileUrl,
+            model_file_key: modelFileKey,
+            model_file_name: data.model_file_name || '',
             file_format: data.file_format || 'GLB',
             file_size: data.file_size || 0,
             poly_count: data.poly_count || '0',
@@ -177,13 +289,20 @@ const CatalogStore = {
 
         custom.unshift(newModel);
         this.saveCustomModels(custom);
-        return newModel.id;
+        return newId;
     },
 
     deleteModel(id) {
         const strId = String(id);
-        const custom = this.getCustomModels().filter(m => String(m.id) !== strId);
-        this.saveCustomModels(custom);
+        const custom = this.getCustomModels();
+        const target = custom.find(m => String(m.id) === strId);
+        if (target && target.model_file_key) {
+            dbDeleteFile(target.model_file_key);
+            blobUrlCache.delete(target.model_file_key);
+        }
+
+        const filtered = custom.filter(m => String(m.id) !== strId);
+        this.saveCustomModels(filtered);
 
         const deleted = this.getDeletedIds();
         if (!deleted.includes(strId)) {

@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Додати 3D Модель | 3D Gallery Hub</title>
 
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -16,28 +18,53 @@
             theme: {
                 extend: {
                     colors: {
-                        brand:  { 50:'#f0f7ff',100:'#e0effe',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8' },
-                        accent: { purple:'#8b5cf6', cyan:'#06b6d4', emerald:'#10b981' },
-                        dark:   { 950:'#090d16',900:'#0d1322',850:'#131b2e',800:'#19233c',700:'#23304f',600:'#33446b' }
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                        },
+                        dark: {
+                            950: '#090d16',
+                            900: '#0d1322',
+                            850: '#131b2e',
+                            800: '#19233c',
+                            750: '#1c2844',
+                            700: '#23304f',
+                            600: '#33446b',
+                        }
                     },
-                    fontFamily: { sans:['"Plus Jakarta Sans"','sans-serif'], mono:['"JetBrains Mono"','monospace'] }
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
                 }
             }
         }
     </script>
+
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body class="bg-dark-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- Header -->
+    <!-- Header Navigation -->
     <header class="sticky top-0 z-50 backdrop-blur-md bg-dark-900/85 border-b border-dark-700/60">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
+                
+                <!-- Logo -->
                 <a href="index.html" class="flex items-center gap-3 group shrink-0">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-accent-purple to-accent-cyan p-0.5">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-accent-purple to-accent-cyan p-0.5 shadow-lg shadow-brand-500/20 group-hover:shadow-brand-500/40 transition-all duration-300">
                         <div class="w-full h-full bg-dark-900 rounded-[10px] flex items-center justify-center">
-                            <i class="fa-solid fa-cube text-transparent bg-clip-text bg-gradient-to-tr from-brand-500 to-accent-cyan text-xl"></i>
+                            <i class="fa-solid fa-cube text-transparent bg-clip-text bg-gradient-to-tr from-brand-500 to-accent-cyan text-xl group-hover:scale-110 transition-transform"></i>
                         </div>
                     </div>
                     <div class="flex flex-col">
@@ -45,62 +72,57 @@
                             3D<span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-accent-cyan">GALLERY</span>
                             <span class="text-[10px] uppercase font-bold tracking-widest px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">Hub</span>
                         </span>
-                        <span class="text-[11px] text-slate-400 font-medium">Каталог 3D моделей</span>
+                        <span class="text-[11px] text-slate-400 font-medium tracking-wide">Каталог 3D моделей</span>
                     </div>
                 </a>
-                <nav class="flex items-center gap-1 sm:gap-2">
-                    <a href="index.html" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-dark-800">
-                        <i class="fa-solid fa-house mr-1.5 text-xs"></i>Головна
+
+                <!-- Nav links -->
+                <nav class="flex items-center gap-2 sm:gap-3">
+                    <a href="index.html" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-dark-850 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-house text-xs text-brand-400"></i>
+                        <span class="hidden sm:inline">Головна</span>
                     </a>
-                    <a href="gallery.html" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-dark-800">
-                        <i class="fa-solid fa-shapes mr-1.5 text-xs text-accent-cyan"></i>Галерея
+                    <a href="gallery.html" class="px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-dark-850 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-shapes text-xs text-accent-cyan"></i>
+                        <span>Галерея</span>
                     </a>
-                    <a href="add.html" class="ml-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-lg">
-                        <i class="fa-solid fa-plus text-xs"></i>Додати
+                    <a href="add.html" class="px-4 py-2 rounded-xl text-sm font-bold bg-dark-800 text-white border border-dark-700 transition-all flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-plus text-xs text-brand-400"></i>
+                        <span>Додати модель</span>
                     </a>
                 </nav>
             </div>
         </div>
     </header>
 
-    <!-- Notice Banner: GitHub Pages limitation -->
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
-        <div class="flex items-start gap-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs leading-relaxed">
-            <i class="fa-solid fa-circle-info text-amber-400 mt-0.5 shrink-0 text-sm"></i>
-            <div>
-                <strong class="font-bold text-amber-200">Примітка щодо GitHub Pages:</strong>
-                На статичному хостингу файли не зберігаються на сервері. Модель та фотографії зберігаються у вашому браузері (<code class="bg-dark-950/50 px-1 rounded">localStorage</code>). Щоб переглянути 3D файл (GLB), введіть URL-посилання на нього. Вже завантажені демо-моделі доступні у Галереї завжди.
-            </div>
-        </div>
-    </div>
+    <!-- Main Content -->
+    <main class="flex-grow py-10">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <main class="flex-grow">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-            <!-- Header -->
+            <!-- Back link & Title -->
             <div class="mb-8">
                 <a href="gallery.html" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white mb-3 transition-colors">
                     <i class="fa-solid fa-arrow-left"></i> Назад до галереї
                 </a>
                 <h1 class="text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-                    <span class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-cyan flex items-center justify-center text-white text-lg shadow-lg">
+                    <span class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-cyan flex items-center justify-center text-white text-lg shadow-lg shadow-brand-500/20">
                         <i class="fa-solid fa-cube"></i>
                     </span>
                     Додати нову 3D Модель
                 </h1>
                 <p class="text-sm text-slate-400 mt-2">
-                    Заповніть інформацію та вкажіть URL на GLB-файл. Дані зберігаються локально в браузері.
+                    Заповніть інформацію, завантажте 3D файл з вашого пристрою та додайте фотографії для персональної фотогалереї моделі.
                 </p>
             </div>
 
             <!-- Success Banner -->
-            <div id="success-banner" class="hidden mb-6 flex items-center gap-3 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm">
-                <i class="fa-solid fa-circle-check text-emerald-400 text-xl shrink-0"></i>
-                <div>
-                    <strong class="font-bold text-emerald-200">Модель успішно збережена!</strong>
+            <div id="success-banner" class="hidden mb-6 p-4 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 flex items-center gap-3 shadow-xl">
+                <i class="fa-solid fa-circle-check text-2xl text-emerald-400 shrink-0"></i>
+                <div class="flex-1">
+                    <strong class="font-bold text-emerald-200">Модель та фотографії успішно збережені!</strong>
                     <div class="mt-1 flex gap-3 text-xs">
                         <a id="success-view-link" href="gallery.html" class="underline hover:text-white">Переглянути в галереї</a>
-                        <a id="success-model-link" href="gallery.html" class="underline hover:text-white">Відкрити модель →</a>
+                        <a id="success-model-link" href="gallery.html" class="underline hover:text-white font-bold">Відкрити 3D перегляд →</a>
                     </div>
                 </div>
             </div>
@@ -108,7 +130,7 @@
             <!-- Form -->
             <form id="add-form" onsubmit="handleSubmit(event)" class="space-y-8 bg-dark-900 border border-dark-700/80 rounded-3xl p-6 sm:p-10 shadow-2xl">
 
-                <!-- Section 1: Main info -->
+                <!-- Розділ 1: Основна інформація -->
                 <div class="space-y-5">
                     <h2 class="text-lg font-bold text-white flex items-center gap-2.5 pb-3 border-b border-dark-800">
                         <i class="fa-solid fa-circle-info text-brand-400"></i>
@@ -180,100 +202,161 @@
                     </div>
                 </div>
 
-                <!-- Section 2: 3D file URL & thumbnail URL -->
+                <!-- РОЗДІЛ 2: Файл 3D моделі та Головна обкладинка (Завантаження файлів як на скріншоті 2) -->
                 <div class="space-y-5 pt-4">
                     <h2 class="text-lg font-bold text-white flex items-center gap-2.5 pb-3 border-b border-dark-800">
                         <i class="fa-solid fa-shapes text-accent-cyan"></i>
-                        <span>Файл 3D моделі та Обкладинка</span>
+                        <span>Файл 3D моделі та Головна обкладинка</span>
                     </h2>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <!-- GLB URL -->
+                        
+                        <!-- 3D Model File Upload -->
                         <div>
-                            <label for="model_url" class="block text-sm font-semibold text-slate-200 mb-2">
-                                URL на GLB/GLTF файл <span class="text-brand-400 text-[11px] font-normal">(для 3D перегляду)</span>
+                            <label class="block text-sm font-semibold text-slate-200 mb-2">
+                                Файл 3D моделі (.glb, .gltf, .obj, .stl)
                             </label>
-                            <input type="url" id="model_url" name="model_url"
-                                placeholder="https://example.com/model.glb"
-                                class="w-full px-4 py-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
-                            <p class="text-[11px] text-slate-500 mt-1">Вставте пряме посилання на GLB файл (GitHub raw, CDN тощо)</p>
-                        </div>
+                            <div class="border-2 border-dashed border-dark-700 hover:border-brand-500/60 rounded-2xl p-5 text-center bg-dark-950/60 transition-colors">
+                                <i class="fa-solid fa-cube text-3xl text-brand-400 mb-2"></i>
+                                <p class="text-xs text-slate-300 font-medium">Оберіть 3D файл</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">GLB, GLTF для інтерактивного 3D перегляду, або OBJ, STL, FBX</p>
+                                
+                                <input 
+                                    type="file" 
+                                    name="model_file_input" 
+                                    id="model_file_input" 
+                                    accept=".glb,.gltf,.obj,.stl,.fbx,.blend,.zip"
+                                    onchange="handleModelFileSelect(this)"
+                                    class="mt-3 block w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-600/30 file:text-brand-300 hover:file:bg-brand-600/50 cursor-pointer"
+                                >
+                            </div>
 
-                        <!-- Thumbnail URL -->
-                        <div>
-                            <label for="thumbnail_url" class="block text-sm font-semibold text-slate-200 mb-2">
-                                URL обкладинки <span class="text-accent-cyan text-[11px] font-normal">(прев'ю картки)</span>
-                            </label>
-                            <input type="url" id="thumbnail_url" name="thumbnail_url"
-                                placeholder="https://example.com/preview.jpg"
-                                onchange="previewThumbURL(this.value)"
-                                class="w-full px-4 py-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
-                            <!-- Thumbnail preview -->
-                            <div id="thumb-url-preview" class="hidden mt-3">
-                                <p class="text-[11px] text-slate-400 mb-1">Попередній перегляд:</p>
-                                <img id="thumb-url-img" src="" alt="preview" class="w-full h-28 object-cover rounded-xl border border-dark-700">
+                            <!-- 3D File status badge -->
+                            <div id="model-file-info" class="mt-2 hidden p-2.5 rounded-xl bg-dark-850 border border-brand-500/40 flex items-center justify-between text-xs">
+                                <div class="flex items-center gap-2 truncate">
+                                    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                                    <span id="model-file-name" class="font-mono text-slate-200 truncate"></span>
+                                </div>
+                                <span id="model-file-size" class="px-2 py-0.5 rounded bg-brand-600/20 text-brand-300 text-[10px] font-mono shrink-0"></span>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Format & size -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <!-- Main Thumbnail Cover Upload -->
                         <div>
-                            <label for="file_format" class="block text-sm font-semibold text-slate-200 mb-2">Формат файлу</label>
-                            <select id="file_format" name="file_format"
-                                class="w-full px-4 py-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white focus:outline-none focus:border-brand-500 cursor-pointer">
-                                <option>GLB</option>
-                                <option>GLTF</option>
-                                <option>OBJ</option>
-                                <option>STL</option>
-                                <option>FBX</option>
-                                <option>BLEND</option>
-                            </select>
+                            <label class="block text-sm font-semibold text-slate-200 mb-2">
+                                Головна обкладинка картки (Прев'ю)
+                            </label>
+                            <div class="border-2 border-dashed border-dark-700 hover:border-accent-cyan/60 rounded-2xl p-5 text-center bg-dark-950/60 transition-colors">
+                                <i class="fa-solid fa-image text-3xl text-accent-cyan mb-2"></i>
+                                <p class="text-xs text-slate-300 font-medium">Оберіть обкладинку</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">PNG, JPG, WEBP (рекомендовано 4:3 або 16:9)</p>
+                                
+                                <input 
+                                    type="file" 
+                                    name="thumbnail_input" 
+                                    id="thumbnail_input" 
+                                    accept="image/*"
+                                    onchange="handleThumbnailSelect(this)"
+                                    class="mt-3 block w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-accent-cyan/20 file:text-accent-cyan hover:file:bg-accent-cyan/30 cursor-pointer"
+                                >
+                            </div>
+
+                            <!-- Thumbnail preview container -->
+                            <div id="thumb-preview-container" class="mt-3 hidden">
+                                <p class="text-[11px] text-slate-400 mb-1">Попередній перегляд обкладинки:</p>
+                                <img id="thumb-preview-img" src="" alt="Thumbnail preview" class="w-full h-32 object-cover rounded-xl border border-dark-700">
+                            </div>
                         </div>
-                        <div>
-                            <label for="file_size" class="block text-sm font-semibold text-slate-200 mb-2">Розмір файлу (байти, необов'язково)</label>
-                            <input type="number" id="file_size" name="file_size"
-                                placeholder="напр. 3500000 (3.5 МБ)"
-                                class="w-full px-4 py-3 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
-                        </div>
+
                     </div>
                 </div>
 
-                <!-- Section 3: Gallery photos URLs -->
+                <!-- РОЗДІЛ 3: Фотографії для галереї моделі (Мульти-завантаження як на скріншоті 2) -->
                 <div class="space-y-5 pt-4">
                     <div class="flex items-center justify-between pb-3 border-b border-dark-800">
                         <h2 class="text-lg font-bold text-white flex items-center gap-2.5">
                             <i class="fa-solid fa-images text-amber-400"></i>
-                            <span>Фотографії для галереї</span>
+                            <span>Фотографії для галереї моделі</span>
                         </h2>
                         <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                            URL-посилання
+                            Мульти-завантаження
                         </span>
                     </div>
 
                     <p class="text-xs text-slate-300 leading-relaxed">
-                        Вставте URL-посилання на зображення рендерів, скріншотів або wireframe-знімків. Натисніть «Додати фото», щоб додати ще один рядок.
+                        Додайте рендери, скріншоти сітки (wireframe), види з різних ракурсів чи текстурні карти. Всі додані фото будуть відображатися в інтерактивній галереї та повноекранному перегляді для цієї моделі!
                     </p>
 
-                    <div id="photo-urls-container" class="space-y-3">
-                        <!-- Photo URL rows injected here -->
+                    <!-- Big Dashed Multi-Photo Upload Box -->
+                    <div class="border-2 border-dashed border-amber-500/30 hover:border-amber-500/60 rounded-2xl p-6 sm:p-8 text-center bg-dark-950/80 transition-all">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-3 text-amber-400 text-2xl">
+                            <i class="fa-solid fa-camera-retro"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-white">Виберіть фотографії для фотогалереї</h3>
+                        <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+                            Ви можете вибрати одразу декілька зображень (натисніть Ctrl або Shift при виборі файлів)
+                        </p>
+
+                        <div class="mt-4 flex justify-center">
+                            <label class="cursor-pointer px-5 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-bold text-xs flex items-center gap-2 transition-all hover:scale-105 shadow-lg">
+                                <i class="fa-solid fa-folder-open"></i>
+                                <span>Обрати файли фотографій</span>
+                                <input 
+                                    type="file" 
+                                    name="gallery_photos_input" 
+                                    id="gallery_photos_input" 
+                                    multiple 
+                                    accept="image/*"
+                                    onchange="handleGalleryPhotosSelect(this)"
+                                    class="hidden"
+                                >
+                            </label>
+                        </div>
                     </div>
 
-                    <button type="button" onclick="addPhotoRow()"
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold transition-all">
-                        <i class="fa-solid fa-plus"></i> Додати ще фото
-                    </button>
+                    <!-- Selected Gallery Photos Previews Grid -->
+                    <div id="gallery-previews-section" class="hidden space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span id="gallery-count-badge" class="text-xs font-bold text-amber-400"></span>
+                            <button type="button" onclick="clearGalleryPhotos()" class="text-xs text-slate-400 hover:text-rose-400 transition-colors flex items-center gap-1">
+                                <i class="fa-solid fa-xmark"></i> Очистити вибір фото
+                            </button>
+                        </div>
+                        <div id="gallery-previews-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3"></div>
+                    </div>
                 </div>
 
-                <!-- Submit -->
+                <!-- Додатково: онлайн URL посилання (для сумісності, згорнуто за замовчуванням) -->
+                <details class="pt-2 text-xs text-slate-400 border-t border-dark-800">
+                    <summary class="cursor-pointer hover:text-brand-400 font-semibold py-2 select-none flex items-center gap-2">
+                        <i class="fa-solid fa-link text-slate-500"></i>
+                        <span>Або скористатися онлайн-посиланнями (URL на GLB / фото)</span>
+                    </summary>
+                    <div class="mt-4 space-y-4 p-4 rounded-2xl bg-dark-950/60 border border-dark-800">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-medium mb-1">URL на GLB/GLTF файл:</label>
+                                <input type="url" id="model_url_fallback" placeholder="https://example.com/model.glb"
+                                    class="w-full px-3 py-2 bg-dark-900 border border-dark-700 rounded-lg text-white text-xs">
+                            </div>
+                            <div>
+                                <label class="block font-medium mb-1">URL обкладинки:</label>
+                                <input type="url" id="thumbnail_url_fallback" placeholder="https://example.com/cover.jpg"
+                                    class="w-full px-3 py-2 bg-dark-900 border border-dark-700 rounded-lg text-white text-xs">
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Submit & Cancel -->
                 <div class="pt-6 border-t border-dark-800 flex flex-col sm:flex-row items-center justify-end gap-3">
                     <a href="gallery.html" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-dark-800 hover:bg-dark-700 text-slate-300 text-sm font-semibold text-center transition-colors">
                         Скасувати
                     </a>
-                    <button type="submit"
+                    <button type="submit" id="submit-btn"
                         class="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-brand-600 via-accent-purple to-brand-600 hover:from-brand-500 hover:to-brand-500 text-white font-bold text-sm shadow-xl transition-all hover:scale-[1.02] flex items-center justify-center gap-2">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <span>Зберегти 3D Модель</span>
+                        <span id="submit-label">Зберегти 3D Модель та Фото</span>
                     </button>
                 </div>
 
@@ -290,7 +373,7 @@
                 <span>&copy; 2026 <strong>3D GALLERY Hub</strong>. Всі права захищено.</span>
             </div>
             <span class="text-emerald-400 flex items-center gap-1">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> GitHub Pages
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Онлайн Каталог
             </span>
         </div>
     </footer>
@@ -299,109 +382,240 @@
     <script src="static/js/catalog.js"></script>
     <script src="static/js/main.js"></script>
     <script>
-        let photoRowCount = 0;
+        // State for selected files
+        let selected3DFile = null;
+        let selectedThumbDataUrl = '';
+        let selectedGalleryPhotos = []; // array of { file, dataUrl, caption }
 
-        function addPhotoRow(url = '', caption = '') {
-            photoRowCount++;
-            const container = document.getElementById('photo-urls-container');
-            const row = document.createElement('div');
-            row.className = 'flex items-center gap-3';
-            row.id = `photo-row-${photoRowCount}`;
-            const id = photoRowCount;
-            row.innerHTML = `
-                <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input type="url" value="${url}"
-                        placeholder="https://example.com/render.jpg"
-                        class="photo-url-input w-full px-3 py-2.5 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all">
-                    <input type="text" value="${caption}"
-                        placeholder="Підпис фото (необов'язково)"
-                        class="photo-caption-input w-full px-3 py-2.5 bg-dark-950 border border-dark-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-all">
-                </div>
-                <button type="button" onclick="removePhotoRow(${id})" title="Видалити"
-                    class="p-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs border border-rose-500/30 transition-colors shrink-0">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            `;
-            container.appendChild(row);
+        // Helper: Format file size
+        function formatBytes(bytes) {
+            if (!bytes) return '0 Б';
+            const k = 1024;
+            const sizes = ['Б', 'КБ', 'МБ', 'ГБ'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
 
-        function removePhotoRow(id) {
-            const row = document.getElementById(`photo-row-${id}`);
-            if (row) row.remove();
+        // Helper: Convert file to compressed image Data URL
+        function readFileAsDataUrl(file, maxWidth = 1200, quality = 0.85) {
+            return new Promise((resolve) => {
+                if (!file || !file.type.startsWith('image/')) {
+                    resolve('');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > maxWidth || h > maxWidth) {
+                            if (w > h) {
+                                h = Math.round((h * maxWidth) / w);
+                                w = maxWidth;
+                            } else {
+                                w = Math.round((w * maxWidth) / h);
+                                h = maxWidth;
+                            }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = () => resolve(e.target.result);
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(file);
+            });
         }
 
-        function previewThumbURL(url) {
-            const preview = document.getElementById('thumb-url-preview');
-            const img = document.getElementById('thumb-url-img');
-            if (url) {
-                img.src = url;
-                img.onerror = () => preview.classList.add('hidden');
-                img.onload = () => preview.classList.remove('hidden');
+        // 1. Handle 3D Model file selection
+        function handleModelFileSelect(input) {
+            const infoBox = document.getElementById('model-file-info');
+            const nameEl = document.getElementById('model-file-name');
+            const sizeEl = document.getElementById('model-file-size');
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                selected3DFile = file;
+
+                nameEl.textContent = file.name;
+                sizeEl.textContent = formatBytes(file.size);
+                infoBox.classList.remove('hidden');
+
+                // Auto-fill title if empty
+                const titleInput = document.getElementById('title');
+                if (!titleInput.value.trim()) {
+                    const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+                    titleInput.value = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
+                }
             } else {
-                preview.classList.add('hidden');
+                selected3DFile = null;
+                infoBox.classList.add('hidden');
             }
         }
 
-        function handleSubmit(e) {
+        // 2. Handle Thumbnail file selection
+        async function handleThumbnailSelect(input) {
+            const container = document.getElementById('thumb-preview-container');
+            const img = document.getElementById('thumb-preview-img');
+
+            if (input.files && input.files[0]) {
+                const dataUrl = await readFileAsDataUrl(input.files[0], 900, 0.88);
+                selectedThumbDataUrl = dataUrl;
+                img.src = dataUrl;
+                container.classList.remove('hidden');
+            } else {
+                selectedThumbDataUrl = '';
+                container.classList.add('hidden');
+            }
+        }
+
+        // 3. Handle Multi Gallery Photos selection
+        async function handleGalleryPhotosSelect(input) {
+            const section = document.getElementById('gallery-previews-section');
+            const grid = document.getElementById('gallery-previews-grid');
+            const badge = document.getElementById('gallery-count-badge');
+
+            if (!input.files || input.files.length === 0) return;
+
+            selectedGalleryPhotos = [];
+            grid.innerHTML = '';
+
+            const files = Array.from(input.files);
+            badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1 text-emerald-400"></i> Обробка ${files.length} фотографій...`;
+            section.classList.remove('hidden');
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) continue;
+
+                const dataUrl = await readFileAsDataUrl(file, 1200, 0.85);
+                selectedGalleryPhotos.push({
+                    file,
+                    dataUrl,
+                    caption: file.name
+                });
+
+                const card = document.createElement('div');
+                card.className = 'relative aspect-[4/3] rounded-xl overflow-hidden bg-dark-950 border border-amber-500/40 shadow-sm animate-fadeIn';
+                card.innerHTML = `
+                    <img src="${dataUrl}" alt="${file.name}" class="w-full h-full object-cover">
+                    <div class="absolute bottom-0 inset-x-0 bg-dark-950/80 px-1.5 py-1 text-[10px] text-slate-300 truncate font-mono">
+                        ${file.name}
+                    </div>
+                    <span class="absolute top-1 left-1 bg-dark-900/80 text-amber-300 px-1.5 py-0.5 rounded text-[9px] font-bold">
+                        #${selectedGalleryPhotos.length}
+                    </span>
+                `;
+                grid.appendChild(card);
+            }
+
+            const count = selectedGalleryPhotos.length;
+            badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1 text-emerald-400"></i> Обрано ${count} фото для галереї:`;
+
+            // If no primary thumbnail was selected, use the first gallery photo as thumbnail
+            if (!selectedThumbDataUrl && count > 0) {
+                selectedThumbDataUrl = selectedGalleryPhotos[0].dataUrl;
+                document.getElementById('thumb-preview-img').src = selectedThumbDataUrl;
+                document.getElementById('thumb-preview-container').classList.remove('hidden');
+            }
+        }
+
+        function clearGalleryPhotos() {
+            const input = document.getElementById('gallery_photos_input');
+            if (input) input.value = '';
+            selectedGalleryPhotos = [];
+            document.getElementById('gallery-previews-grid').innerHTML = '';
+            document.getElementById('gallery-previews-section').classList.add('hidden');
+        }
+
+        // 4. Submit form
+        async function handleSubmit(e) {
             e.preventDefault();
+
             const title = document.getElementById('title').value.trim();
             if (!title) {
-                alert('Назва моделі є обов\'язковою!');
+                alert('Будь ласка, вкажіть назву моделі!');
                 return;
             }
 
-            // Collect photo URLs
-            const photos = [];
-            document.querySelectorAll('#photo-urls-container > div').forEach(row => {
-                const urlInput = row.querySelector('.photo-url-input');
-                const captionInput = row.querySelector('.photo-caption-input');
-                const url = urlInput ? urlInput.value.trim() : '';
-                if (url) {
-                    photos.push({
-                        photo_path: url,
-                        caption: captionInput ? captionInput.value.trim() : '',
-                        created_at: new Date().toISOString().replace('T', ' ').slice(0, 19)
-                    });
+            const submitBtn = document.getElementById('submit-btn');
+            const submitLabel = document.getElementById('submit-label');
+            submitBtn.disabled = true;
+            submitLabel.textContent = 'Збереження моделі та фото...';
+
+            try {
+                // Determine file format and size
+                let fileFormat = 'GLB';
+                let fileSize = 0;
+                let modelFileUrl = document.getElementById('model_url_fallback')?.value?.trim() || '';
+
+                if (selected3DFile) {
+                    const ext = selected3DFile.name.split('.').pop().toUpperCase();
+                    fileFormat = ext || 'GLB';
+                    fileSize = selected3DFile.size;
                 }
-            });
 
-            const modelData = {
-                title,
-                description: document.getElementById('description').value.trim(),
-                category: document.getElementById('category').value,
-                author: document.getElementById('author').value.trim() || '3D Автор',
-                tags: document.getElementById('tags').value.trim(),
-                poly_count: document.getElementById('poly_count').value.trim(),
-                model_file: document.getElementById('model_url').value.trim(),
-                file_format: document.getElementById('file_format').value,
-                file_size: parseInt(document.getElementById('file_size').value) || 0,
-                thumbnail: document.getElementById('thumbnail_url').value.trim(),
-                photos
-            };
+                // Determine thumbnail
+                let thumbUrl = selectedThumbDataUrl || document.getElementById('thumbnail_url_fallback')?.value?.trim() || '';
 
-            const newId = CatalogStore.addModel(modelData);
+                // Build photos array
+                const photos = selectedGalleryPhotos.map(p => ({
+                    photo_path: p.dataUrl,
+                    caption: p.caption,
+                    created_at: new Date().toISOString().replace('T', ' ').slice(0, 19)
+                }));
 
-            // Show success
-            const banner = document.getElementById('success-banner');
-            banner.classList.remove('hidden');
-            document.getElementById('success-view-link').href = 'gallery.html';
-            document.getElementById('success-model-link').href = `model.html?id=${newId}`;
+                const modelData = {
+                    title,
+                    description: document.getElementById('description').value.trim(),
+                    category: document.getElementById('category').value,
+                    author: document.getElementById('author').value.trim() || '3D Автор',
+                    tags: document.getElementById('tags').value.trim(),
+                    poly_count: document.getElementById('poly_count').value.trim() || 'Low-Poly',
+                    model_file: modelFileUrl,
+                    model_file_blob: selected3DFile || null,
+                    model_file_name: selected3DFile ? selected3DFile.name : '',
+                    file_format: fileFormat,
+                    file_size: fileSize,
+                    thumbnail: thumbUrl,
+                    photos
+                };
 
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+                const newId = await CatalogStore.addModel(modelData);
 
-            // Reset form
-            document.getElementById('add-form').reset();
-            document.getElementById('photo-urls-container').innerHTML = '';
-            photoRowCount = 0;
-            document.getElementById('thumb-url-preview').classList.add('hidden');
-            addPhotoRow();
+                // Show success message
+                const banner = document.getElementById('success-banner');
+                banner.classList.remove('hidden');
+                document.getElementById('success-view-link').href = 'gallery.html';
+                document.getElementById('success-model-link').href = `model.html?id=${newId}`;
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // Reset form state
+                document.getElementById('add-form').reset();
+                selected3DFile = null;
+                selectedThumbDataUrl = '';
+                selectedGalleryPhotos = [];
+                document.getElementById('model-file-info').classList.add('hidden');
+                document.getElementById('thumb-preview-container').classList.add('hidden');
+                document.getElementById('gallery-previews-section').classList.add('hidden');
+                document.getElementById('gallery-previews-grid').innerHTML = '';
+
+            } catch (err) {
+                console.error('Error saving model:', err);
+                alert('Виникла помилка при збереженні: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitLabel.textContent = 'Зберегти 3D Модель та Фото';
+            }
         }
-
-        // Init first photo row
-        document.addEventListener('DOMContentLoaded', () => {
-            addPhotoRow();
-        });
     </script>
 </body>
 </html>

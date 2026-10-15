@@ -422,7 +422,7 @@
             if (m.model_file) {
                 const btn = document.getElementById('download-btn');
                 btn.href = m.model_file;
-                btn.download = '';
+                btn.download = m.model_file_name || `${m.title}.${(m.file_format || 'glb').toLowerCase()}`;
                 document.getElementById('download-label').textContent = `Завантажити 3D Модель (${CatalogStore.formatFilesize(m.file_size)})`;
             } else {
                 document.getElementById('download-btn-container').classList.add('hidden');
@@ -568,7 +568,7 @@
             window.location.href = 'gallery.html';
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const id = getModelId();
             if (!id) {
                 document.getElementById('not-found').classList.remove('hidden');
@@ -579,6 +579,11 @@
             if (!model) {
                 document.getElementById('not-found').classList.remove('hidden');
                 return;
+            }
+
+            // Resolve 3D model blob from IndexedDB if stored locally
+            if (CatalogStore.resolveModelBlobUrl) {
+                await CatalogStore.resolveModelBlobUrl(model);
             }
 
             currentModel = model;
